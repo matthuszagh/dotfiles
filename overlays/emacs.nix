@@ -1,0 +1,23 @@
+self: super:
+
+let
+  version = "27";
+  versionModifier = ".050";
+in
+{
+  emacs = (super.emacs.override {
+    withGTK3 = true;
+    withXwidgets = true;
+    withX = true; # provides imagemagick and other GUI-related support.
+    srcRepo = true;
+    withCsrc = true;
+  }).overrideAttrs (attrs: {
+    name = "emacs-${version}${versionModifier}";
+    version = version;
+    versionModifier = versionModifier;
+    CFLAGS = "-Ofast -march=native -momit-leaf-frame-pointer";
+    patches = [];
+
+    src = /home/matt/src/emacs;
+  });
+}

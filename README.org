@@ -1,0 +1,72 @@
+#+title: dotfiles
+
+* meta
+This configuration has two primary goals: it should allow full
+bootstrapping capabilities from a live USB containing this repository
+(see the [[id:c2f11003-b5e9-48af-aa96-6fdf8a09eb32][bootstrapping]] section) and it should make it easy and safe to
+switch between radically different configurations.
+
+** limitations
+Currently, this system only supports NixOS. Even though I plan to use
+Nix as my primary driver, I'd like to be able to experiment with other
+distros, notably Guix and Gentoo. I imagine the best way to do this is
+to create separate BTRFS subvolumes.
+
+** literate configuration
+After originally having been totally convinced I'd use a single
+literate config file for my entire dotfiles repo, I've finally decided
+against it. Here's a pro/con list (wrt literate config) that led me to
+this decision:
+
+Pros:
+1. It keeps documentation and code side-by-side, which potentially
+   makes it easier to understand chosen configurations.
+
+Cons:
+1. They add a layer of complexity when something goes wrong. For
+   example, if there's an error in my Emacs config, I have to edit the
+   files directly and then redo the edits in the literate config.
+2. Programming tools are well-designed for traditional source
+   directories, but not really for literate
+   configs. Counterintuitively, this makes literate configurations
+   somewhat harder to navigate than traditional source directories
+   (jump to definition etc don't work, just simple searches). Of
+   course, you can get all of these things to work, but you need to
+   leave the literate config to do so. It just feels like you're
+   splitting yourself across separate systems.
+3. Literate configs require a fair amount of prerequisite software to
+   work, whereas traditional source dirs just need vim and a terminal
+   if all else fails.
+4. The adjacency of documentation and source code is not as good as it
+   sounds. In order to avoid a complex web of code fragments that your
+   tools can't navigate, you need to keep code chunks large. So, if
+   you want to document things with a high-level of granularity you
+   need to use code comments anyway. The larger literate documentation
+   sections are not too different from READMEs at the end of the day.
+
+* structure
+** machines
+Computer-specific configurations.
+
+** config
+Software configurations.
+
+** scripts
+Bash scripts to bootstrap and configure a system and to perform
+sysadmin functions.
+
+* bootstrapping
+:PROPERTIES:
+:ID:       c2f11003-b5e9-48af-aa96-6fdf8a09eb32
+:END:
+Bootstrapping includes just about every aspect of system
+configuration, including drive preparation (partitioning, setting up
+filesystems, etc.). The only aspect of system configuration not
+supported is the copying of private keys and passwords to a new
+machine, since these should probably never be put online. However,
+scripts are still provided to do this when 2 computers and a USB are
+present (one computer contains the keys, the other is the new system).
+
+All bootstrapping scripts are located under ~scripts\slash{}bootstrap~.
+
+** drive preparation
