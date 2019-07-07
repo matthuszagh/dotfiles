@@ -11,9 +11,9 @@
 
   nix.nixPath = [
   # use my own local repo for the nixpkgs collection
-  "nixpkgs=/home/matt/src/nixpkgs"
-  "nixos-config=/etc/nixos/configuration.nix"
-  "/nix/var/nix/profiles/per-user/root/channels"
+    "nixpkgs=/home/matt/src/nixpkgs"
+    "nixos-config=/etc/nixos/configuration.nix"
+    "/nix/var/nix/profiles/per-user/root/channels"
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -202,8 +202,11 @@
     nixpkgs.config = import ../config/nixpkgs-config.nix;
     xdg.configFile."nixpkgs/config.nix".source = ../config/nixpkgs-config.nix;
 
+    # user packages that do not require/support home-manager
+    # customization (they may still have overlays)
     home.packages = with pkgs; [
       primerun
+      kicad
     ];
 
     imports = [
