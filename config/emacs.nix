@@ -27,6 +27,7 @@
       helm-eww
       helm-org-rifle
       helm-projectile
+      helm-recoll
       helm-rg
       helpful
       ht
@@ -54,6 +55,8 @@
       org-plus-contrib
     ]) ++ (with epkgs; [
       pdf-tools
+    ]) ++ (with custompkgs; [
+      org-recoll
     ]));
   };
 }

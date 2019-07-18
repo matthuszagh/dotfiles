@@ -208,6 +208,9 @@
       primerun
       kicad
     ];
+      ## search
+      recoll
+
 
     imports = [
       ../config/emacs.nix
@@ -215,6 +218,7 @@
       ../config/keychain.nix
       ../config/gpg.nix
       ../config/bash.nix
+      ../config/recoll.nix
     ];
   };
 
