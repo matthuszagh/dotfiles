@@ -45,15 +45,37 @@ Cons:
    sections are not too different from READMEs at the end of the day.
 
 * structure
+** config
+Modifies the behavior of existing programs. This is not used to change
+how we compile the program (e.g. optimization flags, etc.). For that,
+use overlays instead.
+
 ** machines
 Computer-specific configurations.
 
-** config
-Software configurations.
+** overlays
+Overlays change how Nix compiles a program. For instance, if Nix
+compiles a stable release version and we'd like the master version, or
+we'd like to change compiler flags (for debugging or optimization,
+etc.) we'd probably use an overlay.
 
 ** scripts
 Bash scripts to bootstrap and configure a system and to perform
 sysadmin functions.
+
+* software
+** kicad
+*** developing libraries
+When developing kicad libraries (such as symbols, footprints, etc.)
+change the kicad config settings to point to the appropriate
+directories (e.g. ~\tilde{}\slash{}src\slash{}kicad-footprints~). Do not
+change how kicad is compiled. That will prevent you from modifying
+library components.
+** octave
+*** packages
+I haven't yet setup octave packages in a Nix-declarative way. They are
+installed adhoc with ~pkg install /package/ -forge~ and go in the ~octave~
+subdir of home. This is less than ideal and not reproducible.
 
 * bootstrapping
 :PROPERTIES:

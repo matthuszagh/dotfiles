@@ -2,5 +2,5 @@
 
 {
   allowUnfree = true;
-  sandbox = true;
+  # sandbox = true;
 }

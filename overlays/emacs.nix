@@ -3,6 +3,10 @@ self: super:
 let
   version = "27";
   versionModifier = ".050";
+  preserve-source = ''
+    mkdir -p $out/src
+    cp -r $src $out/src
+  '';
 in
 {
   emacs = (super.emacs.override {
@@ -15,9 +19,12 @@ in
     name = "emacs-${version}${versionModifier}";
     version = version;
     versionModifier = versionModifier;
-    CFLAGS = "-Ofast -march=native -momit-leaf-frame-pointer";
+    src = /home/matt/src/emacs;
+    CFLAGS = "-O2 -march=native -momit-leaf-frame-pointer";
     patches = [];
 
-    src = /home/matt/src/emacs;
-  });
+    postFixup = if attrs ? postFixup
+                then attrs.postFixup + preserve-source
+                else preserve-source;
+    });
 }

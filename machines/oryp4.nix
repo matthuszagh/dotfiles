@@ -1,20 +1,106 @@
 { config, lib, pkgs, ... }:
 
+let custompkgs = import <custompkgs> {};
+
+    nur = import <nur> {
+      inherit pkgs;
+    };
+
+    system-wide-python2-packages = python-packages:
+    with python-packages; [
+      # matplotlib.override { enableGtk3 = true; }
+      matplotlib
+      numpy
+      pandas
+      scipy
+      ipdb
+      jupyter
+      pyyaml
+      psycopg2
+      pyusb
+      autopep8
+      yapf
+      bitstring
+    ];
+
+    system-wide-python3-packages = python-packages:
+    with python-packages; [
+      # matplotlib.override { enableQt = true; }
+      matplotlib
+      numpy
+      pandas
+      scipy
+      ipdb
+      jupyter
+      pyyaml
+      psycopg2
+      pyusb
+      # TODO get working
+      # pylibftdi
+      autopep8
+      jedi
+      pylint
+      black
+      yapf
+      bitstring
+      nmigen
+      nmigen-boards
+    ];
+    # ++ (with custompkgs; [
+    #   nmigen
+    #   nmigen-boards
+    # ]);
+
+    # python2 experiences collision errors when setting packages (see
+    # https://github.com/NixOS/nixpkgs/pull/24537). Have to set
+    # `ignoreCollisions = true`, which is only available with
+    # `buildEnv`. Python3 does not have this problem.
+    python2-with-system-wide-modules = pkgs.python2.buildEnv.override {
+      extraLibs = system-wide-python2-packages pkgs.python2Packages;
+      ignoreCollisions = true;
+    };
+    # python3-with-system-wide-modules = pkgs.python3.withPackages system-wide-python-packages;
+    python3-with-system-wide-modules = pkgs.python3.withPackages system-wide-python3-packages;
+
+    cura = pkgs.cura.override { plugins = [ pkgs.curaPlugins.octoprint ]; };
+in
 {
   imports = [
     ./oryp4-hardware.nix
     # add home-manager, which is used to manager user configurations
-    "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
+    /home/matt/src/home-manager/nixos
+    # "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
     # disable linux security features to increase performance
-    ../config/make-linux-fast-again.nix
+    #../config/make-linux-fast-again.nix
+    # TODO get working
+    # enable numlock always
+    ../config/numlock.nix
+    # private internet access
+    /home/matt/src/custompkgs/pkgs/pia/default.nix
   ];
 
-  nix.nixPath = [
-  # use my own local repo for the nixpkgs collection
-    "nixpkgs=/home/matt/src/nixpkgs"
-    "nixos-config=/etc/nixos/configuration.nix"
-    "/nix/var/nix/profiles/per-user/root/channels"
-  ];
+  # options configuring nix's behavior
+  nix = {
+    # use a local repo for nix to test out experimental changes
+    package = pkgs.nixUnstable.overrideAttrs (old: {
+      src = /home/matt/src/nix;
+    });
+    nixPath = [
+      "custompkgs=/home/matt/src/custompkgs" # private pkgs repo
+      "nur=/home/matt/src/NUR"               # Nix User Repositories
+      "nixpkgs=/home/matt/src/nixpkgs"       # use local mirror of nixpkgs collection
+      "nixos-config=/etc/nixos/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+
+    # keep-outputs preserves source files and other non-requisit parts
+    # of the build process.  keep-derivations preserves derivation
+    # files, which can be useful to query build dependencies, etc.
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot = {
@@ -78,6 +164,8 @@
   environment.systemPackages = with pkgs; [
     # core
     coreutils
+    binutils
+    usbutils
     git
     wget
     curl
@@ -94,40 +182,147 @@
     # dev
     gnumake
 
+    # keyboard
+    numlockx
+
     # graphics
     # TODO should this be available to root?
     mesa
-    xorg.xorgserver
     xlibs.xwininfo
     xlibs.xhost
     xlibs.xdpyinfo
     glxinfo
   ];
 
+  # Seems to be necessary for gnome-terminal to work through
+  # home-manager.
+  programs.dconf.enable = true;
+
+  programs.wireshark.enable = true;
+
   services = {
+    # compositing manager, replacement for built-in EXWM compositor
+    # which apparently has issues.
+    compton = {
+      enable = true;
+      vSync = true;
+      backend = "glx";
+    };
+
+    # packages with udev rules
+    udev = {
+      packages = with pkgs; [ hackrf ];
+      extraRules = ''
+        # SuperLead 2300 QR scanner
+        ACTION=="add", SUBSYSTEM=="input", ATTR{idVendor}=="2dd6", ATTR{idProduct}=="0260", MODE="0666"
+        ACTION=="add", SUBSYSTEM=="input", \
+          ENV{ID_SERIAL}=="SuperLead_2300_00000000", \
+          ENV{ID_USB_INTERFACE_NUM}=="00", \
+          SYMLINK+="teemi_scan"
+        # Brother PT-1230PC label printer
+        ACTION=="add", SUBSYSTEM=="usbmisc", \
+          ATTR{idVendor}=="04f9", ATTR{idProduct}=="202c", MODE="0666"
+      '';
+    };
+
+    # needed for next-browser
+    dbus.enable = true;
+
+    mpd = {
+      enable = true;
+    };
+
     # Enable the OpenSSH daemon.
     openssh.enable = true;
 
+    bitlbee = {
+      enable = true;
+      plugins = [ pkgs.bitlbee-discord ];
+    };
+
     # power management
-    tlp.enable = true;
+    upower.enable = true;
+    tlp = {
+      enable = true;
+      extraConfig = ''
+        USB_BLACKLIST_PHONE=1
+        CPU_HWP_ON_AC=performance
+        CPU_HWP_ON_BAT=power
+      '';
+
+    };
+
+    # # needed for gnome terminal when using Nvidia GPU with primerun
+    # gnome3.at-spi2-core.enable = true;
+
+    # fetch mail every 3 min.
+    offlineimap = {
+      enable = true;
+    };
 
     # Enable the X11 windowing system.
     xserver = {
       # Enable touchpad support.
       libinput.enable = true;
+      libinput.tapping = false;
+      libinput.disableWhileTyping = true;
 
       enable = true;
       layout = "us";
       xkbOptions = "ctrl:swapcaps";
-      autorun = false;
-      exportConfiguration = true;
 
-      # videoDrivers = [ "nvidia" ];
+      #### NVIDIA setting
+      ## also see xinitrc config for last nvidia/intel setting switch.
+      videoDrivers = [ "nvidiaBeta" ];
+      #### INTEL setting
+      # videoDrivers = [ "intel" ];
+
       resolutions = [ { x = 3840; y = 2160; } ];
       dpi = 192;
       defaultDepth = 24;
       enableCtrlAltBackspace = true;
+
+      # manually start exwm with a startx script. this is only for
+      # using the builtin intel GPU. To use the NVIDIA GPU use
+      # primerun.
+      displayManager.startx = {
+        enable = true;
+      };
     };
+
+    # # Gnome terminal. This service is needed to run gnome terminal for
+    # # some reason.
+    # gnome3.gnome-terminal-server.enable = true;
+
+    # PostgreSQL server
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_10;
+      enableTCPIP = true;
+    };
+
+    # jupyter = {
+    #   enable = true;
+    #   kernels = {
+    #     python3 = let
+    #       env = python3-with-system-wide-modules;
+    #     in {
+    #       displayName = "Jupyter python kernel.";
+    #       argv = [
+    #         "$ {env.interpreter}"
+    #         "-m"
+    #         "ipykernel_launcher"
+    #         "-f"
+    #         "{connection_file}"
+    #       ];
+    #       language = "python";
+    #       # logo32 = "$ {env.sitePackages}/ipykernel/resources/logo-32x32.png";
+    #       # logo64 = "$ {env.sitePackages}/ipykernel/resources/logo-64x64.png";
+    #     };
+    #   };
+    #   password = "'sha1:f7ebcab185cf:53a0532c9a7960ca664ee2486fd45df095539104'";
+    #   user = "matt";
+    # };
   };
 
   nixpkgs.config = {
@@ -144,25 +339,63 @@
         ll = "${pkgs.coreutils}/bin/ls -Alh";
       };
       enableCompletion = true;
+      promptInit = ''
+        # Provide a nice prompt if the terminal supports it.
+        if [ "$TERM" != "dumb" -o -n "$INSIDE_EMACS" ]; then
+          PROMPT_COLOR="01;34m"
+          PS1="\[\033[$PROMPT_COLOR\]\w\[\033[$PROMPT_COLOR\] \$ \[\033[00m\]"
+        fi
+      '';
     };
+
+    gnome-terminal.enable = true;
 
     # light for screen brightness
     light.enable = true;
+
+    # ccache = {
+    #   enable = true;
+    #   # cacheDir = "/var/cache/ccache";
+    #   packageNames = [
+    #     "vtkWithQt4"
+    #     "emacs"
+    #     "octave"
+    #     "sage"
+    #     "yosys"
+    #     "texlive" # TODO is this the right name?
+    #   ];
+    # };
   };
 
   hardware = {
-    nvidiaOptimus.disable = true;
+    #### NVIDIA setting
+    nvidia = {
+      modesetting.enable = true;
+      optimus_prime = {
+        enable = true;
+        nvidiaBusId = "PCI:1:0:0";
+        intelBusId = "PCI:0:2:0";
+      };
+    };
+    #### INTEL setting
+    # nvidiaOptimus.disable = true;
 
     opengl = {
       enable = true;
 
       extraPackages = with pkgs; [
-        linuxPackages.nvidia_x11.out
+        # linuxPackages.nvidia_x11.out
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+        intel-media-driver
       ];
+      driSupport = true;
+      driSupport32Bit = true;
 
-      extraPackages32 = with pkgs; [
-        linuxPackages.nvidia_x11.lib32
-      ];
+      # extraPackages32 = with pkgs; [
+      #   linuxPackages.nvidia_x11.lib32
+      # ];
     };
 
     cpu.intel.updateMicrocode = true;
@@ -177,11 +410,24 @@
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.groups = { plugdev = { }; };
+
   users.users.matt = {
     isNormalUser = true;
     description = "Matt Huszagh";
     # TODO which of these are actually necessary?
-    extraGroups = [ "wheel" "video" "audio" "disk" "networkmanager" ];
+    extraGroups = [
+      "wheel"
+      "video"
+      "audio"
+      "disk"
+      "networkmanager"
+      "wireshark"
+      "plugdev"
+      "dialout"
+      # brother label printer
+      "lp"
+    ];
   };
 
   home-manager.users.matt = { pkgs, ... }: {
@@ -195,7 +441,27 @@
                           pathExists (path + ("/" + n + "/default.nix")))
                 (attrNames (readDir path)));
 
-    programs.chromium.enable = true;
+    programs = {
+      offlineimap.enable = true;
+      chromium.enable = true;
+      fish.enable = true;
+      gnome-terminal = {
+        enable = true;
+        profile = {
+          matt = {
+            default = true;
+            visibleName = "matt";
+            font = "Source Code Pro";
+            scrollbackLines = 100000;
+            # TODO for some reason `null' isn't working here.
+            # scrollbackLines = null;
+            showScrollbar = false;
+          };
+        };
+      };
+    };
+
+    services.pasystray.enable = true;
 
     xdg.enable = true;
 
@@ -205,12 +471,128 @@
     # user packages that do not require/support home-manager
     # customization (they may still have overlays)
     home.packages = with pkgs; [
-      primerun
+      ## electronics
       kicad
-    ];
+      freecad
+
+      ## browsers
+      w3m
+      speedtest-cli
+      notmuch
+      next
+      next-gtk-webkit
+      glib-networking
+      gsettings-desktop-schemas
+      # offlineimap
+      # ledger
+      # python37Packages.ofxclient
+      # ledger-autosync
+
+      ## video
+      vlc
+      ffmpeg
+
+      anki
+      # python2-with-system-wide-modules
+      python3-with-system-wide-modules
+
+      # necessary for previewing org images.
+      imagemagick
+
+      ## programming
+      dos2unix
+      (lib.hiPrio gcc)
+      clang_8
+      clang-analyzer
+      gdb
+      gfortran
+      clang-tools
+      clang-manpages
+      ccls
+      cmake
+      ripgrep
+      python37Packages.python-language-server # needs to be available as a standalone program
+      # TODO fix
+      # pypi2nix
+      cask
+      stdman # cppreference manpages
+      wireshark
+      bear
+      direnv
+
+      # hackrf
+      hackrf
+      rtl-sdr
+      gnuradio
+
+      ## utilities
+      tree
+      unrar
+      vdpauinfo
+      nox
+
+      ## fpga
+      yosys
+      symbiyosys
+      verilator
+      verilog
+      nextpnr
+      trellis
+      icestorm
+      gtkwave
+      openocd
+      libftdi1
+
+      # 3D printing
+      cura
+      openscad
+
+      ispell
+
       ## search
       recoll
 
+      ## extra
+      okular
+      libreoffice
+      gnome3.gnome-terminal
+
+      ## math
+      octave
+      paraview
+      ghostscript
+      sage
+
+      ## backup
+      restic
+      backblaze-b2
+      gdrive
+      rclone
+
+      ## media
+      # TODO get working
+      #dolphinEmu
+      transmission
+      mpv
+
+      ## OS emulation
+      wine
+
+      ## power
+      powertop
+
+      # Private nixpkgs repo. I use this as a staging area for pkgs
+      # not yet ready for the main nixpkgs repo and for packages that
+      # will never be fit for nixpkgs.
+      ] ++ (with custompkgs; [
+        openems
+        appcsxcad
+        hyp2mat
+        # primerun
+        sbcl
+        vivado-2017-2
+        brainworkshop
+      ]);
 
     imports = [
       ../config/emacs.nix
@@ -218,10 +600,22 @@
       ../config/keychain.nix
       ../config/gpg.nix
       ../config/bash.nix
+      ../config/xinitrc.nix
+      ../config/direnv.nix
+      ../config/pylint.nix
+      ../config/next.nix
+      # TODO this interferes with kicad-written files
+      # ../config/kicad.nix
+      ../config/tex.nix
+      ../config/chktex.nix
+      ../config/octave.nix
+      ../config/sage.nix
+      ../config/offlineimap.nix
+      ../config/notmuch.nix
+      ../config/clang-format.nix
       ../config/recoll.nix
     ];
   };
 
   system.stateVersion = "19.03";
-  system.copySystemConfiguration = true;
 }

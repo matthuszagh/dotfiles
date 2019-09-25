@@ -6,6 +6,13 @@
     userName = "Matt Huszagh";
     userEmail = "huszaghmatt@gmail.com";
 
+    # TODO how do I set github user?
+    extraConfig = {
+      github = {
+        user = "matthuszagh";
+      };
+    };
+
     # TODO configure signing. this is someone elses, just to get an idea.
     # signing = {
     #   signByDefault = true;

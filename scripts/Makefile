@@ -10,6 +10,7 @@ populate: clean
 	cp -r ${dotfiles_dir}/config ${nixos_dir}
 	cp -r ${dotfiles_dir}/overlays ${nixos_dir}
 	cp -r ${dotfiles_dir}/security ${nixos_dir}
+	cp -r ${dotfiles_dir}/pkgs ${nixos_dir}
 
 clean:
 	rm -rf ${nixos_dir}/*
