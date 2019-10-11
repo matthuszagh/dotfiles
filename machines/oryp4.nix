@@ -89,6 +89,7 @@ in
       "custompkgs=/home/matt/src/custompkgs" # private pkgs repo
       "nur=/home/matt/src/NUR"               # Nix User Repositories
       "nixpkgs=/home/matt/src/nixpkgs"       # use local mirror of nixpkgs collection
+      "nixpkgs-overlays=/home/matt/src/dotfiles/overlays"
       "nixos-config=/etc/nixos/configuration.nix"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
@@ -431,16 +432,6 @@ in
   };
 
   home-manager.users.matt = { pkgs, ... }: {
-    # find all overlays under ../overlays dir. the overlay can either
-    # be a file, or a directory with a default.nix file within it,
-    # where default.nix contains the overlay.
-    nixpkgs.overlays =
-      let path = ../overlays; in with builtins;
-            map (n: import (path + ("/" + n)))
-              (filter (n: match ".*\\.nix" n != null ||
-                          pathExists (path + ("/" + n + "/default.nix")))
-                (attrNames (readDir path)));
-
     programs = {
       offlineimap.enable = true;
       chromium.enable = true;
