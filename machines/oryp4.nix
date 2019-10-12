@@ -6,23 +6,6 @@ let custompkgs = import <custompkgs> {};
       inherit pkgs;
     };
 
-    system-wide-python2-packages = python-packages:
-    with python-packages; [
-      # matplotlib.override { enableGtk3 = true; }
-      matplotlib
-      numpy
-      pandas
-      scipy
-      ipdb
-      jupyter
-      pyyaml
-      psycopg2
-      pyusb
-      autopep8
-      yapf
-      bitstring
-    ];
-
     system-wide-python3-packages = python-packages:
     with python-packages; [
       # matplotlib.override { enableQt = true; }
@@ -46,23 +29,8 @@ let custompkgs = import <custompkgs> {};
       nmigen
       nmigen-boards
     ];
-    # ++ (with custompkgs; [
-    #   nmigen
-    #   nmigen-boards
-    # ]);
 
-    # python2 experiences collision errors when setting packages (see
-    # https://github.com/NixOS/nixpkgs/pull/24537). Have to set
-    # `ignoreCollisions = true`, which is only available with
-    # `buildEnv`. Python3 does not have this problem.
-    python2-with-system-wide-modules = pkgs.python2.buildEnv.override {
-      extraLibs = system-wide-python2-packages pkgs.python2Packages;
-      ignoreCollisions = true;
-    };
-    # python3-with-system-wide-modules = pkgs.python3.withPackages system-wide-python-packages;
     python3-with-system-wide-modules = pkgs.python3.withPackages system-wide-python3-packages;
-
-    cura = pkgs.cura.override { plugins = [ pkgs.curaPlugins.octoprint ]; };
 in
 {
   imports = [
@@ -176,12 +144,15 @@ in
     pciutils
     tlp
     wpa_supplicant
+    powertop
 
     # editing
     vim
 
     # dev
     gnumake
+    # TODO should be bundled with Emacs
+    glibcInfo
 
     # keyboard
     numlockx
@@ -194,6 +165,15 @@ in
     xlibs.xdpyinfo
     glxinfo
   ];
+
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    doc.enable = true;
+    info.enable = true;
+    man.enable = true;
+    # nixos.includeAllModules = true;
+  };
 
   # Seems to be necessary for gnome-terminal to work through
   # home-manager.
@@ -250,7 +230,6 @@ in
         CPU_HWP_ON_AC=performance
         CPU_HWP_ON_BAT=power
       '';
-
     };
 
     # # needed for gnome terminal when using Nvidia GPU with primerun
@@ -260,6 +239,9 @@ in
     offlineimap = {
       enable = true;
     };
+
+    # spice support for virtual machines.
+    spice-vdagentd.enable = true;
 
     # Enable the X11 windowing system.
     xserver = {
@@ -353,19 +335,10 @@ in
 
     # light for screen brightness
     light.enable = true;
+  };
 
-    # ccache = {
-    #   enable = true;
-    #   # cacheDir = "/var/cache/ccache";
-    #   packageNames = [
-    #     "vtkWithQt4"
-    #     "emacs"
-    #     "octave"
-    #     "sage"
-    #     "yosys"
-    #     "texlive" # TODO is this the right name?
-    #   ];
-    # };
+  virtualisation = {
+    libvirtd.enable = true;
   };
 
   hardware = {
@@ -426,8 +399,8 @@ in
       "wireshark"
       "plugdev"
       "dialout"
-      # brother label printer
-      "lp"
+      "libvirtd"
+      "lp" # brother label printer
     ];
   };
 
@@ -435,6 +408,7 @@ in
     programs = {
       offlineimap.enable = true;
       chromium.enable = true;
+      firefox.enable = true;
       fish.enable = true;
       gnome-terminal = {
         enable = true;
@@ -462,56 +436,23 @@ in
     # user packages that do not require/support home-manager
     # customization (they may still have overlays)
     home.packages = with pkgs; [
-      ## electronics
-      kicad
-      freecad
-
       ## browsers
       w3m
       speedtest-cli
-      notmuch
-      next
-      next-gtk-webkit
       glib-networking
-      gsettings-desktop-schemas
-      # offlineimap
-      # ledger
-      # python37Packages.ofxclient
-      # ledger-autosync
 
-      ## video
-      vlc
-      ffmpeg
-
-      anki
-      # python2-with-system-wide-modules
       python3-with-system-wide-modules
-
-      # necessary for previewing org images.
-      imagemagick
 
       ## programming
       dos2unix
       (lib.hiPrio gcc)
       clang_8
-      clang-analyzer
-      gdb
       gfortran
-      clang-tools
-      clang-manpages
-      ccls
       cmake
-      ripgrep
-      python37Packages.python-language-server # needs to be available as a standalone program
-      # TODO fix
-      # pypi2nix
       cask
-      stdman # cppreference manpages
       wireshark
-      bear
       direnv
 
-      # hackrf
       hackrf
       rtl-sdr
       gnuradio
@@ -522,43 +463,13 @@ in
       vdpauinfo
       nox
 
-      ## fpga
-      yosys
-      symbiyosys
-      verilator
-      verilog
-      nextpnr
-      trellis
-      icestorm
-      gtkwave
-      openocd
-      libftdi1
-
-      # 3D printing
-      cura
-      openscad
-
-      ispell
-
-      ## search
-      recoll
-
       ## extra
-      okular
       libreoffice
-      gnome3.gnome-terminal
 
       ## math
       octave
       paraview
       ghostscript
-      sage
-
-      ## backup
-      restic
-      backblaze-b2
-      gdrive
-      rclone
 
       ## media
       # TODO get working
@@ -569,20 +480,11 @@ in
       ## OS emulation
       wine
 
-      ## power
-      powertop
-
       # Private nixpkgs repo. I use this as a staging area for pkgs
       # not yet ready for the main nixpkgs repo and for packages that
       # will never be fit for nixpkgs.
       ] ++ (with custompkgs; [
-        openems
-        appcsxcad
-        hyp2mat
-        # primerun
-        sbcl
-        vivado-2017-2
-        brainworkshop
+        emacs-wrapped
       ]);
 
     imports = [
