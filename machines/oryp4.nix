@@ -1,36 +1,8 @@
 { config, lib, pkgs, ... }:
 
-let custompkgs = import <custompkgs> {};
-
-    nur = import <nur> {
-      inherit pkgs;
-    };
-
-    system-wide-python3-packages = python-packages:
-    with python-packages; [
-      # matplotlib.override { enableQt = true; }
-      matplotlib
-      numpy
-      pandas
-      scipy
-      ipdb
-      jupyter
-      pyyaml
-      psycopg2
-      pyusb
-      # TODO get working
-      # pylibftdi
-      autopep8
-      jedi
-      pylint
-      black
-      yapf
-      bitstring
-      nmigen
-      nmigen-boards
-    ];
-
-    python3-with-system-wide-modules = pkgs.python3.withPackages system-wide-python3-packages;
+let
+  custompkgs = import <custompkgs> {};
+  nur = import <nur> { inherit pkgs; };
 in
 {
   imports = [
@@ -440,8 +412,6 @@ in
       w3m
       speedtest-cli
       glib-networking
-
-      python3-with-system-wide-modules
 
       ## programming
       dos2unix
