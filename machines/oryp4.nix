@@ -125,6 +125,11 @@ in
     gnumake
     # TODO should be bundled with Emacs
     glibcInfo
+    clang-manpages
+    llvm-manpages
+    stdman # cppreference manpages
+    stdmanpages
+    posix_man_pages
 
     # keyboard
     numlockx
