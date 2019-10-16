@@ -159,6 +159,23 @@ in
   programs.wireshark.enable = true;
 
   services = {
+    # enable locate for searching computer
+    locate = {
+      enable = true;
+      # use mlocate instead of GNU findutils locate
+      locate = pkgs.mlocate;
+      prunePaths = [
+        "/tmp"
+        "/var/tmp"
+        "/var/cache"
+        "/var/lock"
+        "/var/run"
+        "/var/spool"
+        "/nix/store"
+        "/.snapshots"
+      ];
+    };
+
     # compositing manager, replacement for built-in EXWM compositor
     # which apparently has issues.
     compton = {
