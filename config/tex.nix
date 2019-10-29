@@ -12,6 +12,8 @@ in
         collection-latexextra
         siunitx
         pythontex
+        luatex
+        luatex85
         pygmentex
         pdftex
         latexindent
