@@ -8,6 +8,12 @@
 
     # TODO how do I set github user?
     extraConfig = {
+      core = {
+        editor = "vim";
+      };
+
+      merge.renameLimit = "999999";
+
       github = {
         user = "matthuszagh";
       };
