@@ -3,6 +3,16 @@
 let
   custompkgs = import <custompkgs> {};
   nur = import <nur> { inherit pkgs; };
+
+  perl-with-packages = pkgs.perl.withPackages(p: with p; [
+    RPCEPCService
+    DBI
+    DBDPg
+  ]);
+
+  python-with-packages = pkgs.python3Full.withPackages(p: with p; [
+    custompkgs.skidl
+  ]);
 in
 {
   imports = [
@@ -14,13 +24,16 @@ in
     #../config/make-linux-fast-again.nix
     # TODO get working
     # enable numlock always
-    ../config/numlock.nix
+    ../config/services/numlock.nix
+    ../config/services/btrfs-snap.nix
     # private internet access
     /home/matt/src/custompkgs/pkgs/pia/default.nix
   ];
 
   # options configuring nix's behavior
   nix = {
+    useSandbox = true;
+
     # use a local repo for nix to test out experimental changes
     package = pkgs.nixUnstable.overrideAttrs (old: {
       src = /home/matt/src/nix;
@@ -42,6 +55,10 @@ in
       keep-derivations = true
     '';
   };
+
+  nixpkgs.overlays = [
+    (import /home/matt/src/emacs-overlay)
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot = {
@@ -117,6 +134,7 @@ in
     tlp
     wpa_supplicant
     powertop
+    pinentry
 
     # editing
     vim
@@ -130,9 +148,19 @@ in
     stdman # cppreference manpages
     stdmanpages
     posix_man_pages
+    perl-with-packages
+    openocd
+    libftdi1
+    gdb
+    # sageWithDoc
+    lua53Packages.digestif
 
     # keyboard
     numlockx
+
+    # TODO currently needed for offlineimap
+    # TODO should be fixed
+    # notmuch
 
     # graphics
     # TODO should this be available to root?
@@ -163,7 +191,7 @@ in
     locate = {
       enable = true;
       # use mlocate instead of GNU findutils locate
-      locate = pkgs.mlocate;
+      # locate = pkgs.mlocate;
       prunePaths = [
         "/tmp"
         "/var/tmp"
@@ -197,6 +225,10 @@ in
         # Brother PT-1230PC label printer
         ACTION=="add", SUBSYSTEM=="usbmisc", \
           ATTR{idVendor}=="04f9", ATTR{idProduct}=="202c", MODE="0666"
+
+        # Glasgow
+        SUBSYSTEM=="usb", ATTRS{idVendor}=="20b7", ATTRS{idProduct}=="9db1", \
+          MODE="0660", GROUP="plugdev", TAG+="uaccess"
       '';
     };
 
@@ -230,9 +262,13 @@ in
     # gnome3.at-spi2-core.enable = true;
 
     # fetch mail every 3 min.
-    offlineimap = {
-      enable = true;
-    };
+    # TODO fix notmuch
+    # offlineimap = {
+    #   install = true;
+    #   enable = true;
+    #   path = with pkgs; [ notmuch ];
+    #   # timeoutStartSec = "12000";
+    # };
 
     # spice support for virtual machines.
     spice-vdagentd.enable = true;
@@ -438,22 +474,29 @@ in
       ## programming
       dos2unix
       (lib.hiPrio gcc)
-      clang_8
+      custompkgs.clang_multi_9
+      # clang_9
+      # llvm_9
       gfortran
       cmake
       cask
       wireshark
       direnv
+      # TODO bundle with emacs
+      python-with-packages
 
-      hackrf
-      rtl-sdr
-      gnuradio
+      # TODO fix
+      # hackrf
+      # rtl-sdr
+      # gnuradio
 
       ## utilities
       tree
       unrar
       vdpauinfo
       nox
+      # # TODO i think this is better bundled with offlineimap
+      # notmuch
 
       ## extra
       libreoffice
