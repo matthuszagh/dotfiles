@@ -529,6 +529,7 @@ in
       ../config/gpg.nix
       ../config/bash.nix
       ../config/xinitrc.nix
+      ../config/ngspice.nix
       ../config/direnv.nix
       ../config/pylint.nix
       ../config/next.nix
