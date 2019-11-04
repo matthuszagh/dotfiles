@@ -363,6 +363,13 @@ in
 
     gnome-terminal.enable = true;
 
+    gnupg = {
+      agent = {
+        enable = true;
+        pinentryFlavor = "tty";
+      };
+    };
+
     # light for screen brightness
     light.enable = true;
   };
