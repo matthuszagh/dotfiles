@@ -1,18 +1,23 @@
-nixos_dir=/etc/nixos
-dotfiles_dir=~/src/dotfiles
+NIXOS_DIR	= /etc/nixos
+DOTFILES_DIR	= ~/src/dotfiles
 
+.PHONY: oryp4
 oryp4: populate
-	cd ${nixos_dir}
-	ln -s ${nixos_dir}/machines/oryp4.nix ${nixos_dir}/configuration.nix
+	cd $(NIXOS_DIR)
+	ln -s $(NIXOS_DIR)/machines/oryp4.nix $(NIXOS_DIR)/configuration.nix
 
-populate: clean
-	cp -r ${dotfiles_dir}/machines ${nixos_dir}
-	cp -r ${dotfiles_dir}/config ${nixos_dir}
-	cp -r ${dotfiles_dir}/overlays ${nixos_dir}
-	cp -r ${dotfiles_dir}/security ${nixos_dir}
-	cp -r ${dotfiles_dir}/pkgs ${nixos_dir}
+.PHONY: populate
+populate: clean clean_flycheck_elc
+	cp -r $(DOTFILES_DIR)/machines $(NIXOS_DIR)
+	cp -r $(DOTFILES_DIR)/config $(NIXOS_DIR)
+	cp -r $(DOTFILES_DIR)/overlays $(NIXOS_DIR)
+	cp -r $(DOTFILES_DIR)/security $(NIXOS_DIR)
+	cp -r $(DOTFILES_DIR)/pkgs $(NIXOS_DIR)
 
+.PHONY: clean_flycheck_elc
+clean_flycheck_elc:
+	find $(DOTFILES_DIR)/config/emacs/layers/ -name 'flycheck_[A-Za-z0-9]*\.elc' -delete
+
+.PHONY: clean
 clean:
-	rm -rf ${nixos_dir}/*
-
-.PHONY: oryp4 populate clean
+	rm -rf $(NIXOS_DIR)/*
