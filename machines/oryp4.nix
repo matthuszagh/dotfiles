@@ -53,6 +53,7 @@ in
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true
+      experimental-features = nix-command flakes
     '';
   };
 
@@ -154,13 +155,14 @@ in
     gdb
     # sageWithDoc
     lua53Packages.digestif
+    shellcheck
+    nodePackages.bash-language-server
 
     # keyboard
     numlockx
 
     # TODO currently needed for offlineimap
-    # TODO should be fixed
-    # notmuch
+    notmuch
 
     # graphics
     # TODO should this be available to root?
@@ -502,11 +504,12 @@ in
       unrar
       vdpauinfo
       nox
+      nix-review
       # # TODO i think this is better bundled with offlineimap
       # notmuch
 
       ## extra
-      libreoffice
+      # libreoffice
 
       ## math
       octave
@@ -517,6 +520,7 @@ in
       # TODO get working
       #dolphinEmu
       transmission
+      transgui
       mpv
 
       ## OS emulation
@@ -527,6 +531,7 @@ in
       # will never be fit for nixpkgs.
       ] ++ (with custompkgs; [
         emacs-wrapped
+        asymptote
       ]);
 
     imports = [
