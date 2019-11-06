@@ -6,19 +6,25 @@ in
   programs.texlive = {
     enable = true;
     extraPackages = tpkgs: {
-      inherit (tpkgs // custompkgs)
+      inherit (tpkgs)
         collection-fontsrecommended
         scheme-small
         collection-latexextra
+        collection-luatex
+
         siunitx
         pythontex
-        luatex
+        asymptote
+        dvisvgm
+        # luatex
         luatex85
         pygmentex
         pdftex
         latexindent
+        tikz-timing;
+
+      inherit (custompkgs)
         circuitikz
-        tikz-timing
         latexmk;
     };
   };
