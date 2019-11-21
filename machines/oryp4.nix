@@ -161,6 +161,10 @@ in
     # keyboard
     numlockx
 
+    # utilities
+    # move deleted files to trash rather than permanently deleting them.
+    trash-cli
+
     # TODO currently needed for offlineimap
     notmuch
 
@@ -360,6 +364,7 @@ in
       shellAliases = {
         ls = "${pkgs.coreutils}/bin/ls --color=auto";
         ll = "${pkgs.coreutils}/bin/ls -Alh";
+        rm = "${pkgs.trash-cli}/bin/trash";
       };
       enableCompletion = true;
       promptInit = ''
