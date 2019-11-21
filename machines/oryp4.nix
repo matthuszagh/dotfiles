@@ -239,11 +239,6 @@ in
 
         # FMCW Radar
         ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", MODE:="666"
-        # SUBSYSTEM=="tty", \
-        #   ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", \
-        #   ENV{ID_MODEL}=="FT2232H", \
-        #   ENV{ID_USB_INTERFACE_NUM}=="00", \
-        #   MODE:="666", SYMLINK+="fmcw"
       '';
     };
 
