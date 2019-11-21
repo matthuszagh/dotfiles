@@ -231,6 +231,14 @@ in
         # Glasgow
         SUBSYSTEM=="usb", ATTRS{idVendor}=="20b7", ATTRS{idProduct}=="9db1", \
           MODE="0660", GROUP="plugdev", TAG+="uaccess"
+
+        # FMCW Radar
+        ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", MODE:="666"
+        # SUBSYSTEM=="tty", \
+        #   ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", \
+        #   ENV{ID_MODEL}=="FT2232H", \
+        #   ENV{ID_USB_INTERFACE_NUM}=="00", \
+        #   MODE:="666", SYMLINK+="fmcw"
       '';
     };
 
