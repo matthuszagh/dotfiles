@@ -521,6 +521,8 @@ in
       nix-review
       # # TODO i think this is better bundled with offlineimap
       # notmuch
+      # utility for DJVU. allows converting djvu to pdf with ddjvu
+      djvulibre
 
       ## extra
       # libreoffice
