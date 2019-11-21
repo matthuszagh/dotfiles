@@ -12,6 +12,7 @@ in
         collection-latexextra
         collection-luatex
 
+        hf-tikz
         siunitx
         pythontex
         asymptote
@@ -25,6 +26,7 @@ in
 
       inherit (custompkgs)
         circuitikz
+        grffile
         latexmk;
     };
   };
