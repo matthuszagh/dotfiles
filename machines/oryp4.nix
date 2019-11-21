@@ -148,6 +148,7 @@ in
     llvm-manpages
     stdman # cppreference manpages
     stdmanpages
+    man-pages # linux manpages
     posix_man_pages
     perl-with-packages
     openocd
