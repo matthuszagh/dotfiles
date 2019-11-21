@@ -154,7 +154,7 @@ in
     openocd
     libftdi1
     gdb
-    # sageWithDoc
+    sageWithDoc
     lua53Packages.digestif
     shellcheck
     nodePackages.bash-language-server
