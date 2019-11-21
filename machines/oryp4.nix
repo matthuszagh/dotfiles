@@ -529,6 +529,7 @@ in
       octave
       paraview
       ghostscript
+      asymptote
 
       ## media
       # TODO get working
@@ -545,7 +546,6 @@ in
       # will never be fit for nixpkgs.
       ] ++ (with custompkgs; [
         emacs-wrapped
-        asymptote
       ]);
 
     imports = [
