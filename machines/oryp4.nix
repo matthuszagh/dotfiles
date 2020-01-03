@@ -323,29 +323,6 @@ in
       package = pkgs.postgresql_10;
       enableTCPIP = true;
     };
-
-    # jupyter = {
-    #   enable = true;
-    #   kernels = {
-    #     python3 = let
-    #       env = python3-with-system-wide-modules;
-    #     in {
-    #       displayName = "Jupyter python kernel.";
-    #       argv = [
-    #         "$ {env.interpreter}"
-    #         "-m"
-    #         "ipykernel_launcher"
-    #         "-f"
-    #         "{connection_file}"
-    #       ];
-    #       language = "python";
-    #       # logo32 = "$ {env.sitePackages}/ipykernel/resources/logo-32x32.png";
-    #       # logo64 = "$ {env.sitePackages}/ipykernel/resources/logo-64x64.png";
-    #     };
-    #   };
-    #   password = "'sha1:f7ebcab185cf:53a0532c9a7960ca664ee2486fd45df095539104'";
-    #   user = "matt";
-    # };
   };
 
   nixpkgs.config = {
