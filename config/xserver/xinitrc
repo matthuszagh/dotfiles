@@ -5,6 +5,9 @@ xrandr --auto
 # Disable access control for the current user.
 xhost +SI:localuser:$USER
 
+# Set themes, etc.
+# gnome-settings-daemon &
+
 # Make Java applications aware this is a non-reparenting window manager.
 export _JAVA_AWT_WM_NONREPARENTING=1
 
@@ -18,7 +21,7 @@ xset r rate 200 25
 xrandr --dpi 192
 
 # always keep numlock on
-numlockx &
+# numlockx &
 
 # Finally start Emacs
 exec emacs

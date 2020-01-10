@@ -2,7 +2,7 @@ self: super:
 
 let
   version = "27";
-  versionModifier = ".050";
+  versionModifier = ".1";
 in
 {
   emacs = (super.emacs.override {
@@ -17,6 +17,9 @@ in
     versionModifier = versionModifier;
     src = /home/matt/src/emacs;
     CFLAGS = "-O3 -march=native -momit-leaf-frame-pointer";
+    buildInputs = attrs.buildInputs ++ [
+      super.pkgs.jansson
+    ];
     patches = [];
   });
 }

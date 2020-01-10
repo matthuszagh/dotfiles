@@ -1,5 +1,15 @@
 NIXOS_DIR	= /etc/nixos
 DOTFILES_DIR	= ~/src/dotfiles
+MACHINE		= oryp4
+
+.PHONY: rebuild
+rebuild: $(MACHINE)
+	sudo nixos-rebuild switch
+
+.PHONY: rebuild_trace
+rebuild_trace: $(MACHINE)
+	sudo nixos-rebuild switch --show-trace
+
 
 .PHONY: oryp4
 oryp4: populate

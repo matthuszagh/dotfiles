@@ -10,8 +10,9 @@ let
     DBDPg
   ]);
 
-  python-with-packages = pkgs.python3Full.withPackages(p: with p; [
+  python-with-packages = pkgs.python3Full.withPackages (p: with p; [
     custompkgs.skidl
+    sympy
   ]);
 in
 {
@@ -158,13 +159,25 @@ in
     lua53Packages.digestif
     shellcheck
     nodePackages.bash-language-server
+    nodePackages.typescript-language-server
+    nodePackages.typescript
+    # must be root available for proper permissions
+    wireshark
 
     # keyboard
     numlockx
+    # audio
+    pavucontrol
+    sddm
+    obs-studio
 
     # utilities
     # move deleted files to trash rather than permanently deleting them.
     trash-cli
+    # bridge between network interface and software
+    bridge-utils
+    # pdf editor
+    k2pdfopt
 
     # TODO currently needed for offlineimap
     notmuch
@@ -176,7 +189,9 @@ in
     xlibs.xhost
     xlibs.xdpyinfo
     glxinfo
+    gnome3.gnome-settings-daemon
   ];
+  # ] ++ builtins.filter stdenv.lib.isDerivation (builtins.attrValues kdeApplications);
 
   documentation = {
     enable = true;
@@ -211,13 +226,20 @@ in
       ];
     };
 
+    logind.extraConfig = ''
+      HandlePowerKey=ignore
+    '';
+
+    # bluetooth pairing
+    blueman.enable = true;
+
     # compositing manager, replacement for built-in EXWM compositor
     # which apparently has issues.
-    compton = {
-      enable = true;
-      vSync = true;
-      backend = "glx";
-    };
+    # compton = {
+    #   enable = true;
+    #   vSync = true;
+    #   backend = "glx";
+    # };
 
     # packages with udev rules
     udev = {
@@ -229,9 +251,13 @@ in
           ENV{ID_SERIAL}=="SuperLead_2300_00000000", \
           ENV{ID_USB_INTERFACE_NUM}=="00", \
           SYMLINK+="teemi_scan"
+
         # Brother PT-1230PC label printer
         ACTION=="add", SUBSYSTEM=="usbmisc", \
           ATTR{idVendor}=="04f9", ATTR{idProduct}=="202c", MODE="0666"
+
+        # Epson ES-400 scanner
+        ENV{ID_VENDOR_ID}=="04b8", ENV{ID_MODEL_ID}=="0156", MODE:="666, GROUP="scanner"
 
         # Glasgow
         SUBSYSTEM=="usb", ATTRS{idVendor}=="20b7", ATTRS{idProduct}=="9db1", \
@@ -252,10 +278,10 @@ in
     # Enable the OpenSSH daemon.
     openssh.enable = true;
 
-    bitlbee = {
-      enable = true;
-      plugins = [ pkgs.bitlbee-discord ];
-    };
+    # bitlbee = {
+    #   enable = true;
+    #   plugins = [ pkgs.bitlbee-discord ];
+    # };
 
     # power management
     upower.enable = true;
@@ -268,17 +294,12 @@ in
       '';
     };
 
-    # # needed for gnome terminal when using Nvidia GPU with primerun
-    # gnome3.at-spi2-core.enable = true;
-
     # fetch mail every 3 min.
-    # TODO fix notmuch
-    # offlineimap = {
-    #   install = true;
-    #   enable = true;
-    #   path = with pkgs; [ notmuch ];
-    #   # timeoutStartSec = "12000";
-    # };
+    offlineimap = {
+      install = true; # install global service file
+      enable = true; # enable service file
+      path = with pkgs; [ bash notmuch ];
+    };
 
     # spice support for virtual machines.
     spice-vdagentd.enable = true;
@@ -296,7 +317,7 @@ in
 
       #### NVIDIA setting
       ## also see xinitrc config for last nvidia/intel setting switch.
-      videoDrivers = [ "nvidiaBeta" ];
+      videoDrivers = [ "nvidia" ];
       #### INTEL setting
       # videoDrivers = [ "intel" ];
 
@@ -311,6 +332,8 @@ in
       displayManager.startx = {
         enable = true;
       };
+      # displayManager.sddm.enable = true;
+      # desktopManager.plasma5.enable = true;
     };
 
     # # Gnome terminal. This service is needed to run gnome terminal for
@@ -339,14 +362,24 @@ in
         ll = "${pkgs.coreutils}/bin/ls -Alh";
         rm = "${pkgs.trash-cli}/bin/trash";
       };
-      enableCompletion = true;
-      promptInit = ''
-        # Provide a nice prompt if the terminal supports it.
-        if [ "$TERM" != "dumb" -o -n "$INSIDE_EMACS" ]; then
-          PROMPT_COLOR="01;34m"
-          PS1="\[\033[$PROMPT_COLOR\]\w\[\033[$PROMPT_COLOR\] \$ \[\033[00m\]"
-        fi
+      shellInit = ''
+      export KICAD_SYMBOL_DIR=${pkgs.kicad.out}/share/kicad/library
       '';
+      enableCompletion = true;
+      # promptInit = ''
+      #   # Provide a nice prompt if the terminal supports it.
+      #   if [ "$TERM" != "dumb" -o -n "$INSIDE_EMACS" ]; then
+      #     PROMPT_COLOR="01;34m"
+      #     PS1="\[\033[$PROMPT_COLOR\]\w\[\033[$PROMPT_COLOR\] \$ \[\033[00m\]"
+      #   fi
+      # '';
+    };
+
+    fish = {
+      enable = true;
+      vendor.config.enable = true;
+      vendor.completions.enable = true;
+      vendor.functions.enable = true;
     };
 
     gnome-terminal.enable = true;
@@ -358,7 +391,7 @@ in
       };
     };
 
-    # light for screen brightness
+    # screen brightness
     light.enable = true;
   };
 
@@ -369,9 +402,15 @@ in
   hardware = {
     #### NVIDIA setting
     nvidia = {
-      modesetting.enable = true;
-      optimus_prime = {
-        enable = true;
+      # modesetting.enable = true;
+      # optimus_prime = {
+      #   enable = true;
+      #   nvidiaBusId = "PCI:1:0:0";
+      #   intelBusId = "PCI:0:2:0";
+      # };
+      prime = {
+        sync.enable = true;
+        # offload.enable = true;
         nvidiaBusId = "PCI:1:0:0";
         intelBusId = "PCI:0:2:0";
       };
@@ -399,7 +438,35 @@ in
 
     cpu.intel.updateMicrocode = true;
 
-    pulseaudio.enable = true;
+    pulseaudio = {
+      enable = true;
+      # configFile = pkgs.writeText "default.pa" ''
+      #   load-module module-bluetooth-policy
+      #   load-module module-bluetooth-discover
+      #   ## module fails to load with
+      #   ##   module-bluez5-device.c: Failed to get device path from module arguments
+      #   ##   module.c: Failed to load module "module-bluez5-device" (argument: ""): initialization failed.
+      #   # load-module module-bluez5-device
+      #   # load-module module-bluez5-discover
+      # '';
+      extraModules = [ pkgs.pulseaudio-modules-bt ];
+      package = pkgs.pulseaudioFull;
+      support32Bit = true;
+    };
+
+    bluetooth = {
+      enable = true;
+      extraConfig = "
+        [General]
+        Enable=Source,Sink,Media,Socket
+      ";
+    };
+
+    # enable access to scanners
+    sane = {
+      enable = true;
+      snapshot = true;
+    };
   };
 
   fonts = {
@@ -414,7 +481,6 @@ in
   users.users.matt = {
     isNormalUser = true;
     description = "Matt Huszagh";
-    # TODO which of these are actually necessary?
     extraGroups = [
       "wheel"
       "video"
@@ -425,16 +491,28 @@ in
       "plugdev"
       "dialout"
       "libvirtd"
-      "lp" # brother label printer
+      "scanner" # scanners
+      "lp" # printers
     ];
   };
 
   home-manager.users.matt = { pkgs, ... }: {
     programs = {
       offlineimap.enable = true;
-      chromium.enable = true;
       firefox.enable = true;
-      fish.enable = true;
+      fish = {
+        enable = true;
+        shellAliases = {
+          ll = "${pkgs.coreutils}/bin/ls -Alh";
+          rm = "${pkgs.trash-cli}/bin/trash";
+        };
+        interactiveShellInit = ''
+          function fish_vterm_prompt_end;
+              printf '\e]51;A'(whoami)'@'(hostname)':'(pwd)'\e\\';
+          end
+          function track_directories --on-event fish_prompt; fish_vterm_prompt_end; end
+        '';
+      };
       gnome-terminal = {
         enable = true;
         profile = {
@@ -475,10 +553,11 @@ in
       gfortran
       cmake
       cask
-      wireshark
+      # wireshark
       direnv
       # TODO bundle with emacs
       python-with-packages
+      gscan2pdf # connect to scanners
 
       # TODO fix
       # hackrf
@@ -491,35 +570,34 @@ in
       vdpauinfo
       nox
       nix-review
-      # # TODO i think this is better bundled with offlineimap
-      # notmuch
+      ghostscript
       # utility for DJVU. allows converting djvu to pdf with ddjvu
       djvulibre
-
-      ## extra
-      # libreoffice
 
       ## math
       octave
       paraview
-      ghostscript
       asymptote
 
       ## media
-      # TODO get working
-      #dolphinEmu
+      dolphinEmu
       transmission
       transgui
       mpv
+      kdenlive
 
       ## OS emulation
       wine
+
+      ## 3D printing
+      cura
 
       # Private nixpkgs repo. I use this as a staging area for pkgs
       # not yet ready for the main nixpkgs repo and for packages that
       # will never be fit for nixpkgs.
       ] ++ (with custompkgs; [
         emacs-wrapped
+        # openems-doc
       ]);
 
     imports = [

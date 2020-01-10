@@ -8,4 +8,6 @@ in
   home.file.".emacs.d/layers".recursive = true;
   home.file.".emacs.d/snippets".source = /home/matt/src/dotfiles/config/emacs/snippets;
   home.file.".emacs.d/snippets".recursive = true;
+  home.file.".emacs.d/scripts".source = /home/matt/src/dotfiles/config/emacs/scripts;
+  home.file.".emacs.d/scripts".recursive = true;
 }

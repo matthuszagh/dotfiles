@@ -16,7 +16,7 @@ in
         siunitx
         pythontex
         asymptote
-        dvisvgm
+        # dvisvgm
         # luatex
         luatex85
         pygmentex
@@ -26,6 +26,7 @@ in
 
       inherit (custompkgs)
         circuitikz
+        dvisvgm
         grffile
         latexmk;
     };
