@@ -17,7 +17,7 @@ let
 in
 {
   imports = [
-    ./oryp4-hardware.nix
+    ./hardware-configuration.nix
     # add home-manager, which is used to manager user configurations
     /home/matt/src/home-manager/nixos
     # "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
@@ -25,8 +25,8 @@ in
     #../config/make-linux-fast-again.nix
     # TODO get working
     # enable numlock always
-    ../config/services/numlock.nix
-    ../config/services/btrfs-snap.nix
+    ../../config/services/numlock.nix
+    # ../../config/services/btrfs-snap.nix
     # private internet access
     /home/matt/src/custompkgs/pkgs/pia/default.nix
   ];
@@ -43,7 +43,7 @@ in
       "custompkgs=/home/matt/src/custompkgs" # private pkgs repo
       "nur=/home/matt/src/NUR"               # Nix User Repositories
       "nixpkgs=/home/matt/src/nixpkgs"       # use local mirror of nixpkgs collection
-      "nixpkgs-overlays=/home/matt/src/dotfiles/overlays"
+      "nixpkgs-overlays=/etc/nixos/overlays"
       "nixos-config=/etc/nixos/configuration.nix"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
@@ -84,22 +84,22 @@ in
   };
 
   networking = {
-    hostName = "oryp4";
+    hostName = "mbp";
     wireless = {
       enable = true;
-      networks = import ../security/wifi.nix;
+      networks = import ../../security/wifi.nix;
       # specifying wifi networks follows the following syntax:
       # the available network with the highest priority is connected to.
       # networks = {
-      #   "network name 1" = {
-      #     psk = "password1";
+      #   "Almond Downstairs" = {
+      #     psk = "Stephanie";
       #     priority = 100;
       #   };
-      #   "network name 2" = {
-      #     psk = "password2";
+      #   "Where the wid things are" = {
+      #     psk = "Stephanie";
       #     priority = 50;
       #   };
-      #   ...
+      # #   ...
       # };
     };
 
@@ -315,13 +315,9 @@ in
       layout = "us";
       xkbOptions = "ctrl:swapcaps";
 
-      #### NVIDIA setting
-      ## also see xinitrc config for last nvidia/intel setting switch.
-      videoDrivers = [ "nvidia" ];
-      #### INTEL setting
-      # videoDrivers = [ "intel" ];
+      videoDrivers = [ "intel" ];
 
-      resolutions = [ { x = 3840; y = 2160; } ];
+      resolutions = [ { x = 2560; y = 1600; } ];
       dpi = 192;
       defaultDepth = 24;
       enableCtrlAltBackspace = true;
@@ -400,24 +396,6 @@ in
   };
 
   hardware = {
-    #### NVIDIA setting
-    nvidia = {
-      # modesetting.enable = true;
-      # optimus_prime = {
-      #   enable = true;
-      #   nvidiaBusId = "PCI:1:0:0";
-      #   intelBusId = "PCI:0:2:0";
-      # };
-      prime = {
-        sync.enable = true;
-        # offload.enable = true;
-        nvidiaBusId = "PCI:1:0:0";
-        intelBusId = "PCI:0:2:0";
-      };
-    };
-    #### INTEL setting
-    # nvidiaOptimus.disable = true;
-
     opengl = {
       enable = true;
 
@@ -533,8 +511,8 @@ in
 
     xdg.enable = true;
 
-    nixpkgs.config = import ../config/nixpkgs-config.nix;
-    xdg.configFile."nixpkgs/config.nix".source = ../config/nixpkgs-config.nix;
+    nixpkgs.config = import ../../config/nixpkgs-config.nix;
+    xdg.configFile."nixpkgs/config.nix".source = ../../config/nixpkgs-config.nix;
 
     # user packages that do not require/support home-manager
     # customization (they may still have overlays)
@@ -558,6 +536,7 @@ in
       # TODO bundle with emacs
       python-with-packages
       gscan2pdf # connect to scanners
+      kicad
 
       # TODO fix
       # hackrf
@@ -601,26 +580,26 @@ in
       ]);
 
     imports = [
-      ../config/emacs.nix
-      ../config/git.nix
-      ../config/keychain.nix
-      ../config/gpg.nix
-      ../config/bash.nix
-      ../config/xinitrc.nix
-      ../config/ngspice.nix
-      ../config/direnv.nix
-      ../config/pylint.nix
-      ../config/next.nix
+      ../../config/emacs.nix
+      ../../config/git.nix
+      ../../config/keychain.nix
+      ../../config/gpg.nix
+      ../../config/bash.nix
+      ../../config/xinitrc.nix
+      ../../config/ngspice.nix
+      ../../config/direnv.nix
+      ../../config/pylint.nix
+      ../../config/next.nix
       # TODO this interferes with kicad-written files
       # ../config/kicad.nix
-      ../config/tex.nix
-      ../config/chktex.nix
-      ../config/octave.nix
-      ../config/sage.nix
-      ../config/offlineimap.nix
-      ../config/notmuch.nix
-      ../config/clang-format.nix
-      ../config/recoll.nix
+      ../../config/tex.nix
+      ../../config/chktex.nix
+      ../../config/octave.nix
+      ../../config/sage.nix
+      ../../config/offlineimap.nix
+      ../../config/notmuch.nix
+      ../../config/clang-format.nix
+      ../../config/recoll.nix
     ];
   };
 

@@ -1,20 +1,24 @@
 NIXOS_DIR	= /etc/nixos
 DOTFILES_DIR	= ~/src/dotfiles
-MACHINE		= oryp4
+MACHINE		= mbp
 
 .PHONY: rebuild
 rebuild: $(MACHINE)
-	sudo nixos-rebuild switch
+	sudo nixos-rebuild switch --keep-going
 
 .PHONY: rebuild_trace
 rebuild_trace: $(MACHINE)
 	sudo nixos-rebuild switch --show-trace
 
+.PHONY: mbp
+mbp: populate
+	cd $(NIXOS_DIR)
+	ln -s $(NIXOS_DIR)/machines/mbp/configuration.nix $(NIXOS_DIR)/configuration.nix
 
 .PHONY: oryp4
 oryp4: populate
 	cd $(NIXOS_DIR)
-	ln -s $(NIXOS_DIR)/machines/oryp4.nix $(NIXOS_DIR)/configuration.nix
+	ln -s $(NIXOS_DIR)/machines/oryp4/configuration.nix $(NIXOS_DIR)/configuration.nix
 
 .PHONY: populate
 populate: clean clean_flycheck_elc
