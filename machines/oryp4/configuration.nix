@@ -226,10 +226,6 @@ in
       ];
     };
 
-    logind.extraConfig = ''
-      HandlePowerKey=ignore
-    '';
-
     # bluetooth pairing
     blueman.enable = true;
 
