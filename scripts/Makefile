@@ -1,6 +1,6 @@
 NIXOS_DIR	= /etc/nixos
 DOTFILES_DIR	= ~/src/dotfiles
-MACHINE		= mbp
+MACHINE		= ryzen3950
 
 .PHONY: rebuild
 rebuild: $(MACHINE)
@@ -9,6 +9,15 @@ rebuild: $(MACHINE)
 .PHONY: rebuild_trace
 rebuild_trace: $(MACHINE)
 	sudo nixos-rebuild switch --show-trace
+
+.PHONY: bootstrap
+bootstrap: $(MACHINE)
+	sudo nixos-rebuild switch -I nix=/home/matt/src/nix -I nixpkgs=/home/matt/src/nixpkgs -I custompkgs=/home/matt/src/custompkgs --keep-going
+
+.PHONY: ryzen3950
+ryzen3950: populate
+	cd $(NIXOS_DIR)
+	ln -s $(NIXOS_DIR)/machines/ryzen3950/configuration.nix $(NIXOS_DIR)/configuration.nix
 
 .PHONY: mbp
 mbp: populate
