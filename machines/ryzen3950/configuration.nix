@@ -133,6 +133,8 @@ in
     parted
     # displays hardware information
     dmidecode
+    # benchmarking
+    phoronix-test-suite
 
     # editing
     vim
