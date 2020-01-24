@@ -159,6 +159,7 @@ in
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
     nodePackages.typescript
+    python3Packages.hdl_checker
     # must be root available for proper permissions
     wireshark
 
