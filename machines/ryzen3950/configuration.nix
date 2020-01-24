@@ -129,6 +129,8 @@ in
     wpa_supplicant
     powertop
     pinentry
+    # disk partition
+    parted
 
     # editing
     vim
