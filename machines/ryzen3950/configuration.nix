@@ -21,12 +21,11 @@ in
     ./hardware-configuration.nix
     # add home-manager, which is used to manager user configurations
     /home/matt/src/home-manager/nixos
-    # "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
     # disable linux security features to increase performance
     #../config/make-linux-fast-again.nix
     # TODO get working
     # enable numlock always
-    ../../config/services/numlock.nix
+    # ../../config/services/numlock.nix
     ../../config/services/btrfs-snap.nix
     # private internet access
     /home/matt/src/custompkgs/pkgs/pia/default.nix
@@ -88,17 +87,6 @@ in
     useXkbConfig = true;
     # make the console font legible on the HiDPI display.
     font = "latarcyrheb-sun32";
-  };
-
-  networking = {
-    hostName = "ryzen3950";
-    wireless = {
-      enable = true;
-      networks = import ../../security/wifi.nix;
-    };
-
-    useDHCP = true;
-    dhcpcd.persistent = true;
   };
 
   system.autoUpgrade.enable = true;
@@ -188,8 +176,6 @@ in
     xlibs.xhost
     xlibs.xdpyinfo
     glxinfo
-    radeontop
-    krakenx
     # gnome3.gnome-settings-daemon
     breeze-icons
   ];
@@ -317,11 +303,6 @@ in
       layout = "us";
       xkbOptions = "ctrl:swapcaps";
 
-      videoDrivers = [ "amdgpu" ];
-
-      resolutions = [ { x = 3840; y = 2160; } ];
-      dpi = 192;
-      defaultDepth = 24;
       enableCtrlAltBackspace = true;
 
       # manually start exwm with a startx script. this is only for
@@ -401,17 +382,17 @@ in
     opengl = {
       enable = true;
 
-      extraPackages = with pkgs; [
-        vaapiIntel
-        vaapiVdpau
-        libvdpau-va-gl
-        intel-media-driver
-      ];
+      # extraPackages = with pkgs; [
+      #   vaapiIntel
+      #   vaapiVdpau
+      #   libvdpau-va-gl
+      #   intel-media-driver
+      # ];
       driSupport = true;
       driSupport32Bit = true;
     };
 
-    cpu.intel.updateMicrocode = true;
+    # cpu.intel.updateMicrocode = true;
 
     pulseaudio = {
       enable = true;

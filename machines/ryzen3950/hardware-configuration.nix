@@ -4,9 +4,9 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    ];
+  imports =[
+    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+  ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
@@ -26,7 +26,47 @@
       fsType = "vfat";
     };
 
+  # fileSystems."/.backup" =
+  #   { device = "/dev/mapper/cryptsda1";
+  #     fsType = "btrfs";
+  #   };
+
+  # boot.initrd.luks.devices."cryptsda1".device = "/dev/disk/by-uuid/5592422a-b0f9-4569-af33-2f47bf2d8079";
+
   swapDevices = [ ];
 
   nix.maxJobs = lib.mkDefault 32;
+
+  networking = {
+    hostName = "ryzen3950";
+    wireless = {
+      enable = true;
+      networks = import ../../security/wifi.nix;
+    };
+
+    useDHCP = true;
+    # useDHCP = false;
+    # interfaces = {
+    #   enp4s0.useDHCP = true;
+    #   enp5s0.useDHCP = true;
+    #   virbr0.useDHCP = true;
+    #   virbr0-nic.useDHCP = true;
+    #   wlp6s0.useDHCP = true;
+    # };
+    dhcpcd.persistent = true;
+  };
+
+  environment.systemPackages = with pkgs; [
+    radeontop
+    krakenx
+  ];
+
+  services = {
+    xserver = {
+      videoDrivers = [ "amdgpu" ];
+      resolutions = [ { x = 3840; y = 2160; } ];
+      dpi = 192;
+      defaultDepth = 24;
+    };
+  };
 }
