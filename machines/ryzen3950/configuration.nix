@@ -27,7 +27,7 @@ in
     # TODO get working
     # enable numlock always
     ../../config/services/numlock.nix
-    # ../../config/services/btrfs-snap.nix
+    ../../config/services/btrfs-snap.nix
     # private internet access
     /home/matt/src/custompkgs/pkgs/pia/default.nix
   ];
