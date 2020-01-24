@@ -95,19 +95,6 @@ in
     wireless = {
       enable = true;
       networks = import ../../security/wifi.nix;
-      # specifying wifi networks follows the following syntax:
-      # the available network with the highest priority is connected to.
-      # networks = {
-      #   "Almond Downstairs" = {
-      #     psk = "Stephanie";
-      #     priority = 100;
-      #   };
-      #   "Where the wid things are" = {
-      #     psk = "Stephanie";
-      #     priority = 50;
-      #   };
-      # #   ...
-      # };
     };
 
     useDHCP = true;
@@ -122,6 +109,8 @@ in
   };
 
   time.timeZone = "America/Los_Angeles";
+
+  environment.variables.XCURSOR_SIZE = "32";
 
   # system-wide packages
   environment.systemPackages = with pkgs; [
@@ -195,6 +184,7 @@ in
     radeontop
     krakenx
     # gnome3.gnome-settings-daemon
+    breeze-icons
   ];
   # ] ++ builtins.filter stdenv.lib.isDerivation (builtins.attrValues kdeApplications);
 
