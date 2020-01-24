@@ -131,6 +131,8 @@ in
     pinentry
     # disk partition
     parted
+    # displays hardware information
+    dmidecode
 
     # editing
     vim
