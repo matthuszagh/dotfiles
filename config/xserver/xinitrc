@@ -8,6 +8,9 @@ xhost +SI:localuser:$USER
 # Set themes, etc.
 xrdb ~/.Xresources
 
+# Stop creating lots of serverauth files
+xserverauthfile=$XAUTHORITY
+
 # Make Java applications aware this is a non-reparenting window manager.
 export _JAVA_AWT_WM_NONREPARENTING=1
 
