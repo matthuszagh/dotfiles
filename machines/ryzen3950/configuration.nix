@@ -261,11 +261,6 @@ in
     # Enable the OpenSSH daemon.
     openssh.enable = true;
 
-    # bitlbee = {
-    #   enable = true;
-    #   plugins = [ pkgs.bitlbee-discord ];
-    # };
-
     # power management
     upower.enable = true;
     tlp = {
