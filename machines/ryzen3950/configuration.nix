@@ -191,10 +191,6 @@ in
     # nixos.includeAllModules = true;
   };
 
-  # Seems to be necessary for gnome-terminal to work through
-  # home-manager.
-  # programs.dconf.enable = true;
-
   # programs.wireshark.enable = true;
 
   services = {
@@ -316,10 +312,6 @@ in
       # desktopManager.plasma5.enable = true;
     };
 
-    # # Gnome terminal. This service is needed to run gnome terminal for
-    # # some reason.
-    # gnome3.gnome-terminal-server.enable = true;
-
     # PostgreSQL server
     postgresql = {
       enable = true;
@@ -361,8 +353,6 @@ in
       vendor.completions.enable = true;
       vendor.functions.enable = true;
     };
-
-    # gnome-terminal.enable = true;
 
     gnupg = {
       agent = {
@@ -471,20 +461,6 @@ in
           function track_directories --on-event fish_prompt; fish_vterm_prompt_end; end
         '';
       };
-      # gnome-terminal = {
-      #   enable = true;
-      #   profile = {
-      #     matt = {
-      #       default = true;
-      #       visibleName = "matt";
-      #       font = "Source Code Pro";
-      #       scrollbackLines = 100000;
-      #       # TODO for some reason `null' isn't working here.
-      #       # scrollbackLines = null;
-      #       showScrollbar = false;
-      #     };
-      #   };
-      # };
     };
 
     services.pasystray.enable = true;
