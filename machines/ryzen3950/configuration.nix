@@ -209,6 +209,7 @@ in
         "/var/spool"
         "/nix/store"
         "/.snapshots"
+        "/.backup"
       ];
     };
 
