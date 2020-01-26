@@ -60,10 +60,6 @@ in
     '';
   };
 
-  nixpkgs.overlays = [
-    (import /home/matt/src/emacs-overlay)
-  ];
-
   # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
