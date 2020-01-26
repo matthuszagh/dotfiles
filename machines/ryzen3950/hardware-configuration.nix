@@ -16,7 +16,7 @@
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/d31878d6-3a77-4f0f-9fdd-bb9a2c4e578b";
       fsType = "btrfs";
-      options = [ "subvol=nixos" ];
+      options = [ "subvol=nixos" "compress=lzo" "ssd" "noatime" ];
     };
 
   boot.initrd.luks.devices."cryptnvme".device = "/dev/disk/by-uuid/f1dc12d5-9a75-4e28-a747-a098333614ac";
@@ -26,12 +26,14 @@
       fsType = "vfat";
     };
 
-  # fileSystems."/.backup" =
-  #   { device = "/dev/mapper/cryptsda1";
-  #     fsType = "btrfs";
-  #   };
+  fileSystems."/.backup" =
+    { device = "/dev/disk/by-uuid/0bd10808-0330-4736-9425-059d4a0a300e";
+      fsType = "btrfs";
+      options = [ "compress=lzo" ];
+    };
 
-  # boot.initrd.luks.devices."cryptsda1".device = "/dev/disk/by-uuid/5592422a-b0f9-4569-af33-2f47bf2d8079";
+  boot.initrd.luks.devices."cryptsda1".device = "/dev/disk/by-uuid/5592422a-b0f9-4569-af33-2f47bf2d8079";
+  boot.initrd.luks.devices."cryptsdb1".device = "/dev/disk/by-uuid/49e28c9b-506e-4f56-b9ef-3e22c6e06683";
 
   swapDevices = [ ];
 
