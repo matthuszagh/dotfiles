@@ -17,6 +17,8 @@
 
   systemd.timers.btrfs-backup = {
     description = "Run btrfs-backup.sh immediately after btrfs-snap.";
+    wantedBy = [ "timers.target" ];
     after = [ "btrfs-snap.timer" ];
+    requires = [ "btrfs-snap.timer" ];
   };
 }
