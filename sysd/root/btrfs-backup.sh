@@ -5,9 +5,9 @@ BACKUP_DIR=/.backup/home
 
 if [ -d "$BACKUP_DIR" ]; then
     lastsnap="$SNAPSHOT_DIR/$(ls -r "$SNAPSHOT_DIR/" | head -1)"
-    lastbackup="$SNAPSHOT_DIR/$(ls -r "$BACKUP_DIR/" | head -1)"
-    basename=$(basename $last_backup)
-    lastsnap2="$SNAPSHOT_DIR/$basename"
+    lastbackupname=$(ls -r "$BACKUP_DIR/" | head -1)
+    lastbackup="$BACKUP_DIR/$lastbackupname"
+    lastsnap2="$SNAPSHOT_DIR/$lastbackupname"
 
     btrfs send -p $lastsnap2 $lastsnap | btrfs receive $BACKUP_DIR
 
