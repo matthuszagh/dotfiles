@@ -12,7 +12,7 @@ postsynchook = /home/matt/src/tools/offlineimap/postsync.sh
 
 [Repository gmail-Local]
 type = GmailMaildir
-localfolders = ~/mail/gmail
+localfolders = /home/matt/mail/gmail
 
 [Repository gmail-Remote]
 type = Gmail

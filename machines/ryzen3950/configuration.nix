@@ -26,8 +26,9 @@ in
     # TODO get working
     # enable numlock always
     # ../../config/services/numlock.nix
-    ../../config/services/btrfs-snap.nix
-    ../../config/services/btrfs-backup.nix
+    ../../config/services/system/btrfs-snap.nix
+    ../../config/services/system/btrfs-backup.nix
+    ../../config/services/user/offlineimap.nix
     # private internet access
     /home/matt/src/custompkgs/pkgs/pia/default.nix
   ];
@@ -279,13 +280,6 @@ in
       '';
     };
 
-    # fetch mail every 3 min.
-    offlineimap = {
-      install = true; # install global service file
-      enable = true; # enable service file
-      path = with pkgs; [ bash notmuch ];
-    };
-
     # spice support for virtual machines.
     spice-vdagentd.enable = true;
 
@@ -446,7 +440,6 @@ in
 
   home-manager.users.matt = { pkgs, ... }: {
     programs = {
-      offlineimap.enable = true;
       firefox.enable = true;
       fish = {
         enable = true;
