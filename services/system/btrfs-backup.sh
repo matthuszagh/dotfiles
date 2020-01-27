@@ -12,7 +12,7 @@ if [ -d "$BACKUP_DIR" ]; then
     btrfs send -p $lastsnap2 $lastsnap | btrfs receive $BACKUP_DIR
 
     # Remove backups older than 30 days.
-    for f in "$BACKUP_DIR/*"
+    for f in $BACKUP_DIR/*
     do
         fdate=${f##*\/}
         date_diff=$(ddiff "$fdate" today)
