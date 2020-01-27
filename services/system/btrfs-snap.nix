@@ -6,7 +6,7 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = /home/matt/src/dotfiles/sysd/root/btrfs-snap.sh;
+      ExecStart = /home/matt/src/dotfiles/services/system/btrfs-snap.sh;
       User = "root";
     };
     path = with pkgs; [
