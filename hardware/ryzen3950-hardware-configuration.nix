@@ -3,7 +3,7 @@
 {
   imports =[
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    /etc/nixos/config/services/system/btrfs-backup.nix
+    /etc/nixos/services/system/btrfs-backup.nix
   ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];

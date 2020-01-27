@@ -19,7 +19,7 @@ let
   # import paths
   config-path = /etc/nixos/config;
   modules-path = /etc/nixos/modules;
-  services-path = /etc/nixos/config/services;
+  services-path = /etc/nixos/services;
   src-path = /home/matt/src;
 in
 {

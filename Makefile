@@ -20,6 +20,7 @@ populate: clean clean_flycheck_elc
 	cp $(DOTFILES_DIR)/configuration.nix $(NIXOS_DIR)
 	cp $(DOTFILES_DIR)/hardware/$(HOSTNAME)-hardware-configuration.nix $(NIXOS_DIR)/hardware-configuration.nix
 	cp -r $(DOTFILES_DIR)/config $(NIXOS_DIR)
+	cp -r $(DOTFILES_DIR)/services $(NIXOS_DIR)
 	cp -r $(DOTFILES_DIR)/modules $(NIXOS_DIR)
 	cp -r $(DOTFILES_DIR)/overlays $(NIXOS_DIR)
 	cp -r $(DOTFILES_DIR)/security $(NIXOS_DIR)
