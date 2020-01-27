@@ -13,7 +13,7 @@ rebuild_trace: populate
 
 .PHONY: bootstrap
 bootstrap: populate
-	sudo nixos-rebuild switch -I nix=$(SRC_DIR)/nix -I nixpkgs=$(SRC_DIR)/nixpkgs -I custompkgs=$(SRC_DIR)/custompkgs --keep-going
+	sudo nixos-rebuild switch -I nix=$(SRC_DIR)/nix -I nixpkgs=$(SRC_DIR)/nixpkgs -I custompkgs=$(SRC_DIR)/dotfiles/custompkgs --keep-going
 
 .PHONY: populate
 populate: clean clean_flycheck_elc

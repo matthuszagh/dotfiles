@@ -48,7 +48,7 @@ in
 
     # =========================== userspace ==========================
     (services-path + "/user/offlineimap.nix")
-    (src-path + "/custompkgs/pkgs/pia")
+    (src-path + "/dotfiles/custompkgs/pkgs/pia")
     (modules-path + "/fish.nix")
     (modules-path + "/bash.nix")
     (modules-path + "/emacs.nix")
@@ -63,7 +63,7 @@ in
       src = (src-path + "/nix");
     });
     nixPath = [
-      "custompkgs=/home/matt/src/custompkgs" # private pkgs repo
+      "custompkgs=/home/matt/src/dotfiles/custompkgs" # private pkgs repo
       "nur=/home/matt/src/NUR"               # Nix User Repositories
       "nixpkgs=/home/matt/src/nixpkgs"       # use local mirror of nixpkgs collection
       "nixpkgs-overlays=/etc/nixos/overlays"
