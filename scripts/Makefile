@@ -1,41 +1,28 @@
 NIXOS_DIR	= /etc/nixos
-DOTFILES_DIR	= ~/src/dotfiles
-MACHINE		= ryzen3950
+SRC_DIR		= /home/matt/src
+DOTFILES_DIR	= $(SRC_DIR)/dotfiles
+HOSTNAME 	= $(shell hostname)
 
 .PHONY: rebuild
-rebuild: $(MACHINE)
+rebuild: populate
 	sudo nixos-rebuild switch --keep-going
 
 .PHONY: rebuild_trace
-rebuild_trace: $(MACHINE)
+rebuild_trace: populate
 	sudo nixos-rebuild switch --show-trace
 
 .PHONY: bootstrap
-bootstrap: $(MACHINE)
-	sudo nixos-rebuild switch -I nix=/home/matt/src/nix -I nixpkgs=/home/matt/src/nixpkgs -I custompkgs=/home/matt/src/custompkgs --keep-going
-
-.PHONY: ryzen3950
-ryzen3950: populate
-	cd $(NIXOS_DIR)
-	ln -s $(NIXOS_DIR)/machines/ryzen3950/configuration.nix $(NIXOS_DIR)/configuration.nix
-
-.PHONY: mbp
-mbp: populate
-	cd $(NIXOS_DIR)
-	ln -s $(NIXOS_DIR)/machines/mbp/configuration.nix $(NIXOS_DIR)/configuration.nix
-
-.PHONY: oryp4
-oryp4: populate
-	cd $(NIXOS_DIR)
-	ln -s $(NIXOS_DIR)/machines/oryp4/configuration.nix $(NIXOS_DIR)/configuration.nix
+bootstrap: populate
+	sudo nixos-rebuild switch -I nix=$(SRC_DIR)/nix -I nixpkgs=$(SRC_DIR)/nixpkgs -I custompkgs=$(SRC_DIR)/custompkgs --keep-going
 
 .PHONY: populate
 populate: clean clean_flycheck_elc
-	cp -r $(DOTFILES_DIR)/machines $(NIXOS_DIR)
+	cp $(DOTFILES_DIR)/configuration.nix $(NIXOS_DIR)
+	cp $(DOTFILES_DIR)/hardware/$(HOSTNAME)-hardware-configuration.nix $(NIXOS_DIR)/hardware-configuration.nix
 	cp -r $(DOTFILES_DIR)/config $(NIXOS_DIR)
+	cp -r $(DOTFILES_DIR)/modules $(NIXOS_DIR)
 	cp -r $(DOTFILES_DIR)/overlays $(NIXOS_DIR)
 	cp -r $(DOTFILES_DIR)/security $(NIXOS_DIR)
-	cp -r $(DOTFILES_DIR)/pkgs $(NIXOS_DIR)
 
 .PHONY: clean_flycheck_elc
 clean_flycheck_elc:

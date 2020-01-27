@@ -3,6 +3,7 @@
 {
   imports =[
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    /etc/nixos/config/services/system/btrfs-backup.nix
   ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
@@ -40,7 +41,7 @@
     hostName = "ryzen3950";
     wireless = {
       enable = true;
-      networks = import ../../security/wifi.nix;
+      networks = import ./security/wifi.nix;
     };
 
     useDHCP = true;

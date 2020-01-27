@@ -17,24 +17,40 @@ let
   ]);
 
   # import paths
-  services-path = ../../config/services;
+  config-path = /etc/nixos/config;
+  modules-path = /etc/nixos/modules;
+  services-path = /etc/nixos/config/services;
   src-path = /home/matt/src;
 in
 {
   imports = [
     ./hardware-configuration.nix
+
     # add home-manager, which is used to manager user configurations
-    /home/matt/src/home-manager/nixos
+    (src-path + "/home-manager/nixos")
+
     # disable linux security features to increase performance
     #../config/make-linux-fast-again.nix
     # TODO get working
     # enable numlock always
     # ../../config/services/numlock.nix
-    "${services-path}/system/btrfs-snap.nix"
-    "${services-path}/system/btrfs-backup.nix"
-    "${services-path}/user/offlineimap.nix"
-    # private internet access
-    <custompkgs/pkgs/pia>
+
+    # ============================ system ============================
+    (services-path + "/system/btrfs-snap.nix")
+    (modules-path + "/udev.nix")
+    (modules-path + "/locate.nix")
+    (modules-path + "/sound.nix")
+    (modules-path + "/power.nix")
+    (modules-path + "/xserver-startx.nix")
+    # (modules-path + "/xserver-plasma.nix")
+    (modules-path + "/ssh.nix")
+    (modules-path + "/gnupg.nix")
+
+    # =========================== userspace ==========================
+    (services-path + "/user/offlineimap.nix")
+    (src-path + "/custompkgs/pkgs/pia")
+    (modules-path + "/fish.nix")
+    (modules-path + "/bash.nix")
   ];
 
   # options configuring nix's behavior
@@ -43,7 +59,7 @@ in
 
     # use a local repo for nix to test out experimental changes
     package = pkgs.nixUnstable.overrideAttrs (old: {
-      src = /home/matt/src/nix;
+      src = (src-path + "/nix");
     });
     nixPath = [
       "custompkgs=/home/matt/src/custompkgs" # private pkgs repo
@@ -193,31 +209,6 @@ in
   # programs.wireshark.enable = true;
 
   services = {
-    # enable locate for searching computer
-    locate = {
-      enable = true;
-      # use mlocate instead of GNU findutils locate
-      # locate = pkgs.mlocate;
-      prunePaths = [
-        "/tmp"
-        "/var/tmp"
-        "/var/cache"
-        "/var/lock"
-        "/var/run"
-        "/var/spool"
-        "/nix/store"
-        "/.snapshots"
-        "/.backup"
-      ];
-    };
-
-    logind.extraConfig = ''
-      HandlePowerKey=ignore
-    '';
-
-    # bluetooth pairing
-    blueman.enable = true;
-
     # compositing manager, replacement for built-in EXWM compositor
     # which apparently has issues.
     # compton = {
@@ -226,85 +217,11 @@ in
     #   backend = "glx";
     # };
 
-    # packages with udev rules
-    udev = {
-      packages = with pkgs; [ hackrf ];
-      extraRules = ''
-        # SuperLead 2300 QR scanner
-        ACTION=="add", SUBSYSTEM=="input", ATTR{idVendor}=="2dd6", ATTR{idProduct}=="0260", MODE="0666"
-        ACTION=="add", SUBSYSTEM=="input", \
-          ENV{ID_SERIAL}=="SuperLead_2300_00000000", \
-          ENV{ID_USB_INTERFACE_NUM}=="00", \
-          SYMLINK+="teemi_scan"
-
-        # Brother PT-1230PC label printer
-        ACTION=="add", SUBSYSTEM=="usbmisc", \
-          ATTR{idVendor}=="04f9", ATTR{idProduct}=="202c", MODE="0666"
-
-        # Epson ES-400 scanner
-        ENV{ID_VENDOR_ID}=="04b8", ENV{ID_MODEL_ID}=="0156", MODE:="666, GROUP="scanner"
-
-        # Glasgow
-        SUBSYSTEM=="usb", ATTRS{idVendor}=="20b7", ATTRS{idProduct}=="9db1", \
-          MODE="0660", GROUP="plugdev", TAG+="uaccess"
-
-        # FMCW Radar
-        ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", MODE:="666"
-      '';
-    };
-
     # needed for next-browser
     # dbus.enable = true;
 
-    mpd = {
-      enable = true;
-    };
-
-    # Enable the OpenSSH daemon.
-    openssh = {
-      enable = true;
-      forwardX11 = true;
-    };
-
-    # power management
-    upower.enable = true;
-    tlp = {
-      enable = true;
-      extraConfig = ''
-        USB_BLACKLIST_PHONE=1
-        CPU_HWP_ON_AC=performance
-        CPU_HWP_ON_BAT=power
-      '';
-    };
-
     # spice support for virtual machines.
     spice-vdagentd.enable = true;
-
-    # Enable the X11 windowing system.
-    xserver = {
-      # Enable touchpad support.
-      libinput.enable = true;
-      libinput.tapping = false;
-      libinput.disableWhileTyping = true;
-
-      enable = true;
-      layout = "us";
-      xkbOptions = "ctrl:swapcaps";
-
-      enableCtrlAltBackspace = true;
-
-      # remote connections
-      enableTCP = true;
-
-      # manually start exwm with a startx script. this is only for
-      # using the builtin intel GPU. To use the NVIDIA GPU use
-      # primerun.
-      displayManager.startx = {
-        enable = true;
-      };
-      # displayManager.sddm.enable = true;
-      # desktopManager.plasma5.enable = true;
-    };
 
     # PostgreSQL server
     postgresql = {
@@ -316,47 +233,6 @@ in
 
   nixpkgs.config = {
     allowUnfree = true;
-  };
-
-  # Enable sound.
-  sound.enable = true;
-
-  programs = {
-    bash = {
-      shellAliases = {
-        ls = "${pkgs.coreutils}/bin/ls --color=auto";
-        ll = "${pkgs.coreutils}/bin/ls -Alh";
-        rm = "${pkgs.trash-cli}/bin/trash";
-      };
-      shellInit = ''
-      export KICAD_SYMBOL_DIR=${pkgs.kicad.out}/share/kicad/library
-      '';
-      enableCompletion = true;
-      # promptInit = ''
-      #   # Provide a nice prompt if the terminal supports it.
-      #   if [ "$TERM" != "dumb" -o -n "$INSIDE_EMACS" ]; then
-      #     PROMPT_COLOR="01;34m"
-      #     PS1="\[\033[$PROMPT_COLOR\]\w\[\033[$PROMPT_COLOR\] \$ \[\033[00m\]"
-      #   fi
-      # '';
-    };
-
-    fish = {
-      enable = true;
-      vendor.config.enable = true;
-      vendor.completions.enable = true;
-      vendor.functions.enable = true;
-    };
-
-    gnupg = {
-      agent = {
-        enable = true;
-        pinentryFlavor = "tty";
-      };
-    };
-
-    # screen brightness
-    light.enable = true;
   };
 
   virtualisation = {
@@ -378,31 +254,6 @@ in
     };
 
     # cpu.intel.updateMicrocode = true;
-
-    pulseaudio = {
-      enable = true;
-      configFile = pkgs.writeText "default.pa" ''
-        load-module module-bluetooth-policy
-        load-module module-bluetooth-discover
-        ## module fails to load with
-        ##   module-bluez5-device.c: Failed to get device path from module arguments
-        ##   module.c: Failed to load module "module-bluez5-device" (argument: ""): initialization failed.
-        # load-module module-bluez5-device
-        # load-module module-bluez5-discover
-      '';
-      extraModules = [ pkgs.pulseaudio-modules-bt ];
-      package = pkgs.pulseaudioFull;
-      support32Bit = true;
-    };
-
-    bluetooth = {
-      enable = true;
-      config = {
-        General = {
-          Enable = "Source,Sink,Media,Socket";
-        };
-      };
-    };
 
     # enable access to scanners
     sane = {
@@ -460,8 +311,8 @@ in
 
     xdg.enable = true;
 
-    nixpkgs.config = import ../../config/nixpkgs-config.nix;
-    xdg.configFile."nixpkgs/config.nix".source = ../../config/nixpkgs-config.nix;
+    nixpkgs.config = import (config-path + "/nixpkgs-config.nix");
+    xdg.configFile."nixpkgs/config.nix".source = (config-path + "/nixpkgs-config.nix");
 
     # user packages that do not require/support home-manager
     # customization (they may still have overlays)
@@ -529,26 +380,26 @@ in
       ]);
 
     imports = [
-      ../../config/emacs.nix
-      ../../config/git.nix
-      ../../config/keychain.nix
-      ../../config/gpg.nix
-      ../../config/bash.nix
-      ../../config/xinitrc.nix
-      ../../config/ngspice.nix
-      ../../config/direnv.nix
-      ../../config/pylint.nix
-      ../../config/next.nix
+      (config-path + "/emacs.nix")
+      (config-path + "/git.nix")
+      (config-path + "/keychain.nix")
+      (config-path + "/gpg.nix")
+      (config-path + "/bash.nix")
+      (config-path + "/xinitrc.nix")
+      (config-path + "/ngspice.nix")
+      (config-path + "/direnv.nix")
+      (config-path + "/pylint.nix")
+      (config-path + "/next.nix")
       # TODO this interferes with kicad-written files
       # ../config/kicad.nix
-      ../../config/tex.nix
-      ../../config/chktex.nix
-      ../../config/octave.nix
-      ../../config/sage.nix
-      ../../config/offlineimap.nix
-      ../../config/notmuch.nix
-      ../../config/clang-format.nix
-      ../../config/recoll.nix
+      (config-path + "/tex.nix")
+      (config-path + "/chktex.nix")
+      (config-path + "/octave.nix")
+      (config-path + "/sage.nix")
+      (config-path + "/offlineimap.nix")
+      (config-path + "/notmuch.nix")
+      (config-path + "/clang-format.nix")
+      (config-path + "/recoll.nix")
     ];
   };
 
