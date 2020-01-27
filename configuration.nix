@@ -51,6 +51,7 @@ in
     (src-path + "/custompkgs/pkgs/pia")
     (modules-path + "/fish.nix")
     (modules-path + "/bash.nix")
+    (modules-path + "/emacs.nix")
   ];
 
   # options configuring nix's behavior
@@ -231,6 +232,12 @@ in
     };
   };
 
+  nixpkgs.overlays = let path = ./overlays; in with builtins;
+      map (n: import (path + ("/" + n)))
+          (filter (n: match ".*\\.nix" n != null ||
+                      pathExists (path + ("/" + n + "/default.nix")))
+                  (attrNames (readDir path)));
+
   nixpkgs.config = {
     allowUnfree = true;
   };
@@ -375,8 +382,6 @@ in
       # not yet ready for the main nixpkgs repo and for packages that
       # will never be fit for nixpkgs.
       ] ++ (with custompkgs; [
-        emacs-wrapped
-        # openems-doc
       ]);
 
     imports = [
