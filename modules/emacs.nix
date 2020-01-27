@@ -210,9 +210,7 @@ in
     # hdl
     verilator
     # bash
-    # TODO add bash-language-server to nixpkgs
     # tex/latex
-    # TODO add digestif (LSP, github: astoff/digestif) to nixpkgs
     # fortran
     # TODO add fortran-language-server (github: hansec/fortran-language-server) to nixpkgs
     # rust
@@ -222,10 +220,15 @@ in
     rustfmt
     cargo
     # tex
-    # TODO data folders wrong location
-    # lua53Packages.digestif
     # needed for debug adapter protocol
     nodejs
+
+    ## language servers
+    lua53Packages.digestif
+    shellcheck
+    nodePackages.bash-language-server
+    nodePackages.typescript-language-server
+    nodePackages.typescript
 
     # search
     ripgrep
@@ -240,16 +243,15 @@ in
     # utilities
     imagemagick
     ispell
-    gnome3.gnome-terminal
     ghostscript
     firefox
     languagetool
 
     # needed for edbi
     # perl-with-packages
-    # perlPackages.RPCEPCService
-    # perlPackages.DBI
-    # perlPackages.DBDPg
+    perlPackages.RPCEPCService
+    perlPackages.DBI
+    perlPackages.DBDPg
 
     # GUI
     #

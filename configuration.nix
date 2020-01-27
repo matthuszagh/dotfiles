@@ -4,12 +4,6 @@ let
   custompkgs = import <custompkgs> {};
   nur = import <nur> { inherit pkgs; };
 
-  perl-with-packages = pkgs.perl.withPackages(p: with p; [
-    RPCEPCService
-    DBI
-    DBDPg
-  ]);
-
   python-with-packages = pkgs.python3Full.withPackages (p: with p; [
     custompkgs.skidl
     custompkgs.libcircuit
@@ -152,16 +146,10 @@ in
     stdmanpages
     man-pages # linux manpages
     posix_man_pages
-    perl-with-packages
     openocd
     libftdi1
     gdb
     # sageWithDoc
-    lua53Packages.digestif
-    shellcheck
-    nodePackages.bash-language-server
-    nodePackages.typescript-language-server
-    nodePackages.typescript
     # python3Packages.hdl_checker
     # must be root available for proper permissions
     wireshark
