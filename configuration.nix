@@ -41,8 +41,6 @@ in
     (modules-path + "/locate.nix")
     (modules-path + "/sound.nix")
     (modules-path + "/power.nix")
-    (modules-path + "/xserver-startx.nix")
-    # (modules-path + "/xserver-plasma.nix")
     (modules-path + "/ssh.nix")
     (modules-path + "/gnupg.nix")
 
@@ -390,7 +388,6 @@ in
       (config-path + "/keychain.nix")
       (config-path + "/gpg.nix")
       (config-path + "/bash.nix")
-      (config-path + "/xinitrc.nix")
       (config-path + "/ngspice.nix")
       (config-path + "/direnv.nix")
       (config-path + "/pylint.nix")

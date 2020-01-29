@@ -1,8 +1,17 @@
 { config, lib, pkgs, ... }:
 
+let
+  useNvidia = true;
+  useStartx = true;
+  modules-path = /etc/nixos/modules;
+in
 {
-  imports =
-    [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+  imports = [
+    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    (import (modules-path + "/xorg.nix") ({
+      useStartx = useStartx;
+      useNvidia = useNvidia;
+    }))
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "sdhci_pci" ];
@@ -25,6 +34,52 @@
     };
 
   swapDevices = [ ];
+
+  services.xserver = {
+    videoDrivers = if useNvidia then [ "nvidia" ] else [ "intel" ];
+    resolutions = [ { x = 3840; y = 2160; } ];
+    dpi = 192;
+    defaultDepth = 24;
+  };
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    optimus_prime = {
+      enable = true;
+      nvidiaBusId = "PCI:1:0:0";
+      intelBusId = "PCI:0:2:0";
+    };
+    # prime = {
+    #   sync.enable = true;
+    #   # offload.enable = true;
+    #   nvidiaBusId = "PCI:1:0:0";
+    #   intelBusId = "PCI:0:2:0";
+    # };
+  };
+
+  networking = {
+    hostName = "oryp4";
+    wireless = {
+      enable = true;
+      networks = import ./security/wifi.nix;
+      # specifying wifi networks follows the following syntax:
+      # the available network with the highest priority is connected to.
+      # networks = {
+      #   "network name 1" = {
+      #     psk = "password1";
+      #     priority = 100;
+      #   };
+      #   "network name 2" = {
+      #     psk = "password2";
+      #     priority = 50;
+      #   };
+      #   ...
+      # };
+    };
+
+    useDHCP = true;
+    dhcpcd.persistent = true;
+  };
 
   nix.maxJobs = 1;
   nix.buildCores = 6;
