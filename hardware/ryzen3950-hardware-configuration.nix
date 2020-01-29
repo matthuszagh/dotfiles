@@ -1,9 +1,17 @@
 { config, lib, pkgs, ... }:
 
+let
+  useStartx = true;
+  modules-path = /etc/nixos/modules;
+in
 {
   imports =[
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     /etc/nixos/services/system/btrfs-backup.nix
+    (import (modules-path + "/xorg.nix") ({
+      useStartx = useStartx;
+      useNvidia = false;
+    }))
   ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
