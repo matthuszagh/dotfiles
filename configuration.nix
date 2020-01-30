@@ -44,6 +44,7 @@ in
     (modules-path + "/fish.nix")
     (modules-path + "/bash.nix")
     (modules-path + "/emacs.nix")
+    (modules-path + "/bash.nix")
   ];
 
   # options configuring nix's behavior
@@ -285,19 +286,6 @@ in
   home-manager.users.matt = { pkgs, ... }: {
     programs = {
       firefox.enable = true;
-      fish = {
-        enable = true;
-        shellAliases = {
-          ll = "${pkgs.coreutils}/bin/ls -Alh";
-          rm = "${pkgs.trash-cli}/bin/trash";
-        };
-        interactiveShellInit = ''
-          function fish_vterm_prompt_end;
-              printf '\e]51;A'(whoami)'@'(hostname)':'(pwd)'\e\\';
-          end
-          function track_directories --on-event fish_prompt; fish_vterm_prompt_end; end
-        '';
-      };
     };
 
     services.pasystray.enable = true;
@@ -375,7 +363,6 @@ in
       (config-path + "/git.nix")
       (config-path + "/keychain.nix")
       (config-path + "/gpg.nix")
-      (config-path + "/bash.nix")
       (config-path + "/ngspice.nix")
       (config-path + "/direnv.nix")
       (config-path + "/pylint.nix")
