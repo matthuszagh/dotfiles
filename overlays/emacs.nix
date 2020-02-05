@@ -1,8 +1,8 @@
 self: super:
 
 let
-  version = "27";
-  versionModifier = ".1";
+  version = "28";
+  versionModifier = ".0.50";
 in
 {
   emacs = (super.emacs.override {
