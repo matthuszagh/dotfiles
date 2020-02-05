@@ -139,7 +139,9 @@ let
       skidl = skidl;
       python-csxcad = python-csxcad;
       python-openems = python-openems;
+      automesh = automesh;
     };
+    automesh = pkgs.callPackage ./pkgs/automesh { };
     bitmanip = pkgs.callPackage ./pkgs/bitmanip { };
   };
 in self
