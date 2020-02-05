@@ -3,7 +3,7 @@
 % Needed for proper rendering with some corner cases in luatex
 \RequirePackage{luatex85}
 \PassOptionsToPackage{usenames}{xcolor}
-\LoadClass{standalone}
+\LoadClass[preview]{standalone}
 \RequirePackage[inline]{asymptote}
 \RequirePackage{booktabs}
 \RequirePackage{tabularx}
