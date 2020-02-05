@@ -178,11 +178,10 @@ let
       # yasnippet
       # yasnippet-snippets
     ]) ++ (with epkgs.orgPackages; [
-      org
-      org-plus-contrib
     ]) ++ (with epkgs; [
       pdf-tools
     ]) ++ (with custompkgs; [
+      org-mode
       org-recoll
       layers
       justify-kp
@@ -259,7 +258,6 @@ in
     # Emacs as my window manager. If a new graphical environment
     # is setup, such as a desktop manager, these programs can be
     # copied there as well.
-    next
     gsettings-desktop-schemas # needed with next
     # next-gtk-webkit
     anki

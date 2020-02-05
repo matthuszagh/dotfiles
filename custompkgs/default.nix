@@ -103,6 +103,7 @@ let
     org-recoll = callPackage ./pkgs/org-recoll { };
     layers = callPackage ./pkgs/layers { };
     org-db = callPackage ./pkgs/org-db { };
+    org-mode = callPackage ./pkgs/org-mode { };
     justify-kp = callPackage ./pkgs/justify-kp { };
     helm = callPackage ./pkgs/helm { };
     helm-org = callPackage ./pkgs/helm-org { };
