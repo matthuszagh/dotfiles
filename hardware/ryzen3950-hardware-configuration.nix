@@ -19,6 +19,8 @@ in
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
+  hardware.cpu.amd.updateMicrocode = true;
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/d31878d6-3a77-4f0f-9fdd-bb9a2c4e578b";
       fsType = "btrfs";
