@@ -37,6 +37,7 @@ in
     (modules-path + "/power.nix")
     (modules-path + "/ssh.nix")
     (modules-path + "/gnupg.nix")
+    (modules-path + "/lorri.nix")
 
     # =========================== userspace ==========================
     (services-path + "/user/offlineimap.nix")
