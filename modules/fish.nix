@@ -33,6 +33,8 @@
             vterm_printf '51;A'(whoami)'@'(hostname)':'(pwd)
         end
         function track_directories --on-event fish_prompt; fish_vterm_prompt_end; end
+
+        eval (direnv hook fish)
       '';
     };
   };
