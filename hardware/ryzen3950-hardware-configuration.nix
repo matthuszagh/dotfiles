@@ -28,6 +28,7 @@ in
     };
 
   boot.initrd.luks.devices."cryptnvme".device = "/dev/disk/by-uuid/f1dc12d5-9a75-4e28-a747-a098333614ac";
+  boot.initrd.luks.devices."cryptnvme1".device = "/dev/disk/by-uuid/2f7640e7-532f-4404-90fd-b3c065530d42";
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/9C5A-6D6F";
