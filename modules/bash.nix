@@ -76,7 +76,7 @@
             fi
         }
 
-        find_file() {
+        ff() {
             vterm_cmd find-file "$(realpath "$@")"
         }
 
