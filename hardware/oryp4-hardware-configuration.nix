@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  useNvidia = true;
+  useNvidia = false;
   useStartx = true;
   modules-path = /etc/nixos/modules;
 in

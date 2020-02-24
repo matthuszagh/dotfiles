@@ -14,7 +14,7 @@ let
     # ptvsd
     # pylibgen
   ] ++ (with custompkgs; [
-    pylibgen
+    # pylibgen
   ]));
 
   # import paths
