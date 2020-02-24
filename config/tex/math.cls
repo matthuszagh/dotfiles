@@ -19,6 +19,7 @@
 \RequirePackage{amsmath}
 \RequirePackage{textcomp}
 \RequirePackage{amssymb}
+\RequirePackage{breqn}
 
 %% Circuitikz style options
 \ctikzset{resistors/scale=0.6, capacitors/scale=0.6, diodes/scale=0.4}

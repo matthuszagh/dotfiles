@@ -5,10 +5,17 @@ let
   nur = import <nur> { inherit pkgs; };
 
   python-with-packages = pkgs.python3Full.withPackages (p: with p; [
-    custompkgs.skidl
-    custompkgs.libcircuit
+    # TODO fix
+    # custompkgs.skidl
+    # custompkgs.libcircuit
     sympy
-  ]);
+    ipython
+    numpy
+    # ptvsd
+    # pylibgen
+  ] ++ (with custompkgs; [
+    pylibgen
+  ]));
 
   # import paths
   config-path = /etc/nixos/config;
@@ -55,6 +62,10 @@ in
     # use a local repo for nix to test out experimental changes
     package = pkgs.nixUnstable.overrideAttrs (old: {
       src = (src-path + "/nix");
+      # buildInputs = old.buildInputs ++ (with pkgs; [
+      #   bison
+      #   flex
+      # ]);
     });
     nixPath = [
       "custompkgs=/home/matt/src/dotfiles/custompkgs" # private pkgs repo
@@ -118,6 +129,7 @@ in
     binutils
     usbutils
     git
+    git-lfs
     wget
     curl
     zip
@@ -151,10 +163,14 @@ in
     openocd
     libftdi1
     gdb
+    # TODO fix
     # sageWithDoc
     # python3Packages.hdl_checker
     # must be root available for proper permissions
     wireshark
+    nix-generate-from-cpan
+    perlPackages.LaTeXML
+    compsize
 
     # keyboard
     numlockx
@@ -170,6 +186,7 @@ in
     bridge-utils
     # pdf editor
     k2pdfopt
+    google-chrome
 
     # mail
     notmuch
@@ -181,7 +198,7 @@ in
     xlibs.xhost
     xlibs.xdpyinfo
     glxinfo
-    # gnome3.gnome-settings-daemon
+    gnome3.gnome-settings-daemon
     breeze-icons
   ];
   # ] ++ builtins.filter stdenv.lib.isDerivation (builtins.attrValues kdeApplications);
@@ -198,6 +215,7 @@ in
   # programs.wireshark.enable = true;
 
   services = {
+    gnome3.gnome-settings-daemon.enable = true;
     # compositing manager, replacement for built-in EXWM compositor
     # which apparently has issues.
     # compton = {
@@ -285,9 +303,9 @@ in
   };
 
   home-manager.users.matt = { pkgs, ... }: {
-    programs = {
-      firefox.enable = true;
-    };
+    # programs = {
+    #   firefox.enable = true;
+    # };
 
     services.pasystray.enable = true;
 
@@ -314,7 +332,6 @@ in
       cmake
       cask
       # wireshark
-      direnv
       # TODO bundle with emacs
       python-with-packages
       gscan2pdf # connect to scanners
@@ -334,6 +351,8 @@ in
       ghostscript
       # utility for DJVU. allows converting djvu to pdf with ddjvu
       djvulibre
+      # TODO fix
+      firefox
 
       ## math
       octave
@@ -348,7 +367,8 @@ in
       kdenlive
 
       ## OS emulation
-      wine
+      # TODO fix
+      # wine
 
       ## 3D printing
       cura
@@ -367,7 +387,7 @@ in
       (config-path + "/ngspice.nix")
       (config-path + "/direnv.nix")
       (config-path + "/pylint.nix")
-      (config-path + "/next.nix")
+      # (config-path + "/next.nix")
       # TODO this interferes with kicad-written files
       # ../config/kicad.nix
       (config-path + "/tex.nix")

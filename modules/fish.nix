@@ -8,6 +8,10 @@
     vendor.functions.enable = true;
   };
 
+  # users.users.matt = {
+  #   shell = "/run/current-system/sw/bin/fish";
+  # };
+
   home-manager.users.matt = { ... }: {
     programs.fish = {
       enable = true;
@@ -34,8 +38,58 @@
         end
         function track_directories --on-event fish_prompt; fish_vterm_prompt_end; end
 
+        if test "$INSIDE_EMACS" = "vterm"
+            function clear;
+                vterm_printf "51;Evterm-clear-scrollback";
+                tput clear;
+            end
+
+            function ff;
+                vterm_cmd find-file "(realpath "$argv")"
+            end
+        end
+
+        function vterm_cmd
+            if test -n "$TMUX"
+                # tell tmux to pass the escape sequences through
+                # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+                vterm_printf "\ePtmux;\e\e]51;E"
+            else if test "$TERM" = "screen"
+                # GNU screen (screen, screen-256color, screen-256color-bce)
+                vterm_printf "\eP\e]51;E"
+            else
+                vterm_printf "\e]51;E"
+            end
+
+            vterm_printf "\e]51;E"
+            set r ""
+            for x in $argv
+                set r $x (string replace '\\' '\\\\')
+                set r $r (string replace '/\"' '\\\"')
+                vterm_printf '"%s" ' "$r"
+            end
+            if test -n "$TMUX"
+                # tell tmux to pass the escape sequences through
+                # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+                vterm_printf "\007\e\\"
+            else if test "$TERM" = "screen"
+                # GNU screen (screen, screen-256color, screen-256color-bce)
+                vterm_printf "\007\e\\"
+            else
+                vterm_printf "\e\\"
+            end
+        end
+
         eval (direnv hook fish)
       '';
     };
+
+    # home.file.".config/fish/fish_prompt.fish".text = ''
+    #   set -l nix_shell_info (
+    #     if test "$IN_NIX_SHELL" = "1"
+    #       echo -n "<nix-shell> "
+    #     end
+    #   )
+    # '';
   };
 }

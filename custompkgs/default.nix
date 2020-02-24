@@ -7,6 +7,8 @@ let
 
   callPackage = pkgs.lib.callPackageWith (pkgs // self);
   self = rec {
+    latexml = callPackage ./pkgs/latexml { };
+
     # TODO remove all of these when openems PR accepted
     vtk = callPackage ./pkgs/vtk {
       inherit (pkgs.xlibs) libX11 xorgproto libXt;
@@ -128,6 +130,7 @@ let
     pykicad = callPackage ./pkgs/pykicad { };
     pyspice = callPackage ./pkgs/pyspice { };
     # hdl_checker = callPackage ./pkgs/hdl_checker { };
+    pylibgen = callPackage ./pkgs/pylibgen { };
 
     # wrapped packages
     tree-sitter-wrapped = callPackage ./wrapped/tree-sitter { };
@@ -139,7 +142,10 @@ let
       skidl = skidl;
       python-csxcad = python-csxcad;
       python-openems = python-openems;
-      automesh = automesh;
+    };
+    pyems = pkgs.callPackage ./pkgs/pyems {
+      python-csxcad = python-csxcad;
+      python-openems = python-openems;
     };
     automesh = pkgs.callPackage ./pkgs/automesh { };
     bitmanip = pkgs.callPackage ./pkgs/bitmanip { };

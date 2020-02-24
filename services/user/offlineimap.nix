@@ -7,7 +7,7 @@
       Type = "oneshot";
       ExecStart = "offlineimap -u syslog -o -1";
       User = "matt";
-      TimeoutStartSec = "1h";
+      TimeoutStartSec = "3600sec";
     };
     path = with pkgs; [
       offlineimap
@@ -15,13 +15,13 @@
     ];
   };
 
-  systemd.user.timers.offlineimap = {
-    description = "Run offlineimap periodically.";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      Unit = "offlineimap.service";
-      OnCalendar = "*:0/3";
-      Persistent = "true";
-    };
-  };
+  # systemd.user.timers.offlineimap = {
+  #   description = "Run offlineimap periodically.";
+  #   wantedBy = [ "timers.target" ];
+  #   timerConfig = {
+  #     Unit = "offlineimap.service";
+  #     OnCalendar = "*:0/3";
+  #     Persistent = "true";
+  #   };
+  # };
 }

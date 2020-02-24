@@ -1,7 +1,9 @@
 { stdenv, python3Packages
 , skidl
 , python-csxcad
-, python-openems }:
+, python-openems
+, automesh
+}:
 
 python3Packages.buildPythonPackage rec {
   pname = "libcircuit";
@@ -16,5 +18,7 @@ python3Packages.buildPythonPackage rec {
     pathos
     python-openems
     python-csxcad
+  ] ++ [
+    automesh
   ];
 }

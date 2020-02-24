@@ -4,7 +4,6 @@
     services.locate = {
       enable = true;
       interval = "hourly";
-      pruneBindMounts = true;
       prunePaths = [
         "/tmp"
         "/var/tmp"
