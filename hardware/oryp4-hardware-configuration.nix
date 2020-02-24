@@ -81,7 +81,6 @@ in
     dhcpcd.persistent = true;
   };
 
-  nix.maxJobs = 1;
-  nix.buildCores = 6;
+  nix.maxJobs = lib.mkDefault 12;
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
