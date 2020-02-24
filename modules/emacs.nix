@@ -57,6 +57,12 @@ let
       flycheck-cython
       # colors in info-mode
       info-colors
+      hydra
+      perspective
+      haskell-mode
+
+      # html colors in org export
+      htmlize
 
       # vim-like integration
       evil
@@ -155,6 +161,7 @@ let
       dash
       dash-functional
       f
+      s
       org-super-agenda
       peg
       ov
@@ -234,8 +241,6 @@ in
     recoll
 
     # math / science
-    # TODO emacs wrapping problem
-    # sageWithDoc
     # circuit simulation
     ngspice
 
@@ -243,7 +248,6 @@ in
     imagemagick
     ispell
     ghostscript
-    firefox
     languagetool
 
     # needed for edbi
@@ -251,6 +255,7 @@ in
     perlPackages.RPCEPCService
     perlPackages.DBI
     perlPackages.DBDPg
+    perlPackages.LaTeXML
 
     # GUI
     #
