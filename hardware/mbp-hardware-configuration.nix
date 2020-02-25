@@ -38,7 +38,20 @@ in
     defaultDepth = 24;
   };
 
+  environment.variables.XCURSOR_SIZE = "32";
+
   swapDevices = [ { device = "/swapfile"; size = 8192; } ];
+
+  networking = {
+    hostName = "mbp";
+    wireless = {
+      enable = true;
+      networks = import ./security/wifi.nix;
+    };
+
+    useDHCP = true;
+    dhcpcd.persistent = true;
+  };
 
   nix.maxJobs = lib.mkDefault 4;
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
