@@ -27,8 +27,8 @@ in
     };
 
   fileSystems."/boot" =
-    { device = "systemd-1";
-      fsType = "autofs";
+    { device = "/dev/disk/by-uuid/67E3-17ED";
+      fsType = "vfat";
     };
 
   services.xserver = {
