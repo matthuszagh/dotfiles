@@ -22,6 +22,10 @@
         SUBSYSTEM=="usb", ATTRS{idVendor}=="20b7", ATTRS{idProduct}=="9db1", \
           MODE="0660", GROUP="plugdev", TAG+="uaccess"
 
+        # Cypress (also for glasgow)
+        SUBSYSTEM=="usb", ATTRS{idVendor}=="04b4", ATTRS{idProduct}=="8613", \
+          MODE="0660", GROUP="plugdev", TAG+="uaccess"
+
         # FMCW Radar
         ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", MODE:="666"
       '';
