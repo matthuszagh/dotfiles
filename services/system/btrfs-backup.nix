@@ -2,7 +2,7 @@
 
 {
   systemd.services.btrfs-backup = {
-    description = "Create a backup of the home directory.";
+    description = "Backup home directory.";
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
@@ -10,10 +10,16 @@
       User = "root";
     };
     path = with pkgs; [
-      btrfs-progs
-      dateutils
+      btrbk
     ];
-    after = [ "btrfs-snap.service" ];
-    requires = [ "btrfs-snap.service" ];
+  };
+
+  systemd.timers.btrfs-backup = {
+    description = "Run btrfs-backup.sh hourly.";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      Unit = "btrfs-backup.service";
+      OnCalendar = "hourly";
+    };
   };
 }
