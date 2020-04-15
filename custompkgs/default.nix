@@ -131,12 +131,15 @@ let
     pyspice = callPackage ./pkgs/pyspice { };
     # hdl_checker = callPackage ./pkgs/hdl_checker { };
     pylibgen = callPackage ./pkgs/pylibgen { };
+    pylibftdi = callPackage ./pkgs/pylibftdi {
+      inherit (pkgs) libusb1;
+    };
 
     # wrapped packages
     tree-sitter-wrapped = callPackage ./wrapped/tree-sitter { };
 
     # personal packages
-    ebase = callPackage ./pkgs/ebase { };
+    ebase = callPackage ./pkgs/ebase { kibom = kibom; };
     libdigital = pkgs.callPackage ./pkgs/libdigital { cocotb = cocotb; };
     libcircuit = pkgs.callPackage ./pkgs/libcircuit {
       skidl = skidl;

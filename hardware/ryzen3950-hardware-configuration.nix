@@ -3,11 +3,12 @@
 let
   useStartx = true;
   modules-path = /etc/nixos/modules;
+  services-path = /etc/nixos/services;
 in
 {
   imports =[
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    /etc/nixos/services/system/btrfs-backup.nix
+    # (services-path + "/system/btrfs-backup.nix")
     (import (modules-path + "/xorg.nix") ({
       useStartx = useStartx;
       useNvidia = false;
@@ -70,6 +71,7 @@ in
   environment.systemPackages = with pkgs; [
     radeontop
     krakenx
+    btrbk
   ];
 
   environment.variables.XCURSOR_SIZE = "32";

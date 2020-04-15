@@ -6,7 +6,7 @@ python3Packages.buildPythonApplication rec {
     owner = "SchrodingersGat";
     repo = "KiBoM";
     rev = "master";
-    sha256 = "1wgksx2d4w87zibvwssxdh1m2h3v8ran7nj0v1m0gvawbn7rayda";
+    sha256 = "135hgmijf27dqrp3bpplmnzi83drfysjiq297dm67l595xbvkyq5";
   };
 
   propagatedBuildInputs = with python3Packages; [

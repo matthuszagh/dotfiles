@@ -249,6 +249,7 @@ in
     ispell
     ghostscript
     languagetool
+    gimp
 
     # needed for edbi
     # perl-with-packages

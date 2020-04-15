@@ -28,6 +28,15 @@
 
         # FMCW Radar
         ENV{ID_VENDOR_ID}=="0403", ENV{ID_MODEL_ID}=="6010", MODE:="666"
+
+        # RF Explorer
+        ACTION=="add", \
+        ENV{ID_SERIAL}=="Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_e27ea5e3ff66e9119537f363867e4c5a", \
+        MODE:="666"
+
+        # NI gpib-usb-hs
+        #SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="3923", ATTRS{idProduct}=="709b", \
+          ATTRS{serial}=="01E01169", SYMLINK+="gpib0", MODE:="666"
       '';
     };
 }

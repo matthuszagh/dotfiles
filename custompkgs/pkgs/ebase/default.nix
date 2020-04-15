@@ -1,4 +1,4 @@
-{ fetchFromGitHub, stdenv, python3Packages }:
+{ fetchFromGitHub, stdenv, python3Packages, kibom }:
 
 python3Packages.buildPythonApplication rec {
   name = "ebase";
@@ -8,7 +8,9 @@ python3Packages.buildPythonApplication rec {
     pyyaml
     psycopg2
     pyusb
-  ];
+  ] ++ (with pkgs; [
+    kibom
+  ]);
 
   format = "other";
 

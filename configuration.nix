@@ -37,7 +37,6 @@ in
     # ../../config/services/numlock.nix
 
     # ============================ system ============================
-    (services-path + "/system/btrfs-snap.nix")
     (modules-path + "/udev.nix")
     (modules-path + "/locate.nix")
     (modules-path + "/sound.nix")
@@ -45,6 +44,7 @@ in
     (modules-path + "/ssh.nix")
     (modules-path + "/gnupg.nix")
     (modules-path + "/lorri.nix")
+    (modules-path + "/syncthing.nix")
 
     # =========================== userspace ==========================
     (services-path + "/user/offlineimap.nix")
@@ -146,6 +146,8 @@ in
     dmidecode
     # benchmarking
     phoronix-test-suite
+    sloccount
+    scc
 
     # editing
     vim
@@ -164,7 +166,7 @@ in
     libftdi1
     gdb
     # TODO fix
-    # sageWithDoc
+    sageWithDoc
     # python3Packages.hdl_checker
     # must be root available for proper permissions
     wireshark
