@@ -5,7 +5,12 @@
     enable = true;
     declarative = {
       folders = {
-        "/home/matt/src" = {
+        "src" = {
+          path = "/home/matt/src";
+          devices = [ "ryzen3950" "oryp4" ];
+        };
+        "doc" = {
+          path = "/home/matt/doc";
           devices = [ "ryzen3950" "oryp4" ];
         };
       };
