@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
-  useNvidia = false;
-  useStartx = true;
+  useNvidia = true;
+  useStartx = false;
   modules-path = /etc/nixos/modules;
 in
 {
@@ -11,6 +11,7 @@ in
     (import (modules-path + "/xorg.nix") ({
       useStartx = useStartx;
       useNvidia = useNvidia;
+      inherit pkgs;
     }))
     ];
 
@@ -44,8 +45,8 @@ in
 
   hardware.nvidia = {
     modesetting.enable = true;
-    optimus_prime = {
-      enable = true;
+    prime = {
+      sync.enable = true;
       nvidiaBusId = "PCI:1:0:0";
       intelBusId = "PCI:0:2:0";
     };
