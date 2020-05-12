@@ -1,4 +1,7 @@
-{ useStartx ? true, useNvidia ? false, ... }:
+{ useStartx ? true
+, useNvidia ? false
+, pkgs
+, ... }:
 
 {
   services.xserver = {
@@ -20,9 +23,19 @@
       startx.enable = true;
     } else {
       sddm.enable = true;
+    };
+
+    desktopManager = if useStartx then {
+    } else {
       plasma5.enable = true;
     };
   };
+
+  environment.systemPackages = with pkgs; [
+    plasma5.breeze-gtk
+    plasma5.breeze-qt5
+    plasma5.kde-gtk-config
+  ];
 
   home-manager.users.matt = { ... }: {
     home.file.".xinitrc".text = (if useNvidia then ''
