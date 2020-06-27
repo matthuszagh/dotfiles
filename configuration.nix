@@ -58,6 +58,7 @@ in
   # options configuring nix's behavior
   nix = {
     useSandbox = true;
+    nrBuildUsers = 100;
 
     # use a local repo for nix to test out experimental changes
     package = pkgs.nixUnstable.overrideAttrs (old: {
