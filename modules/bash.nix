@@ -7,9 +7,6 @@
       ll = "${pkgs.coreutils}/bin/ls -Alh";
       rm = "${pkgs.trash-cli}/bin/trash";
     };
-    shellInit = ''
-      export KICAD_SYMBOL_DIR=${pkgs.kicad.out}/share/kicad/library
-    '';
     enableCompletion = true;
     # promptInit = ''
     #   # Provide a nice prompt if the terminal supports it.
