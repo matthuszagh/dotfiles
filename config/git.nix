@@ -19,6 +19,8 @@
       };
     };
 
+    lfs.enable = true;
+
     # TODO configure signing. this is someone elses, just to get an idea.
     # signing = {
     #   signByDefault = true;
