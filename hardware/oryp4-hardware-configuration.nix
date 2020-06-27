@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
-  useNvidia = true;
-  useStartx = false;
+  useNvidia = false;
+  useStartx = true;
   modules-path = /etc/nixos/modules;
 in
 {
@@ -43,19 +43,24 @@ in
     defaultDepth = 24;
   };
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    prime = {
-      sync.enable = true;
-      nvidiaBusId = "PCI:1:0:0";
-      intelBusId = "PCI:0:2:0";
+  hardware = if useNvidia then {
+    nvidia = {
+      modesetting.enable = true;
+      prime = {
+        sync.enable = true;
+        # offload.enable = true;
+        nvidiaBusId = "PCI:1:0:0";
+        intelBusId = "PCI:0:2:0";
+      };
     };
-    # prime = {
-    #   sync.enable = true;
-    #   # offload.enable = true;
-    #   nvidiaBusId = "PCI:1:0:0";
-    #   intelBusId = "PCI:0:2:0";
-    # };
+  } else {
+    opengl.extraPackages = with pkgs; [
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+        intel-media-driver
+      ];
+    cpu.intel.updateMicrocode = true;
   };
 
   networking = {
