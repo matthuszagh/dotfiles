@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
-
 let
-  custompkgs = import <custompkgs> {};
+  custompkgs = import <custompkgs> { };
   nur = import <nur> { inherit pkgs; };
 
   python-with-packages = pkgs.python3Full.withPackages (p: with p; [
@@ -45,6 +44,7 @@ in
     (modules-path + "/gnupg.nix")
     (modules-path + "/lorri.nix")
     (modules-path + "/syncthing.nix")
+    (modules-path + "/wireshark.nix")
 
     # =========================== userspace ==========================
     (services-path + "/user/offlineimap.nix")
