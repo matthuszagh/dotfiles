@@ -20,6 +20,9 @@
 \RequirePackage{textcomp}
 \RequirePackage{amssymb}
 
+%% Declared math operators
+\DeclareMathOperator{\rank}{rank}
+
 %% Circuitikz style options
 \ctikzset{resistors/scale=0.6, capacitors/scale=0.6, diodes/scale=0.4}
 \ctikzset{tripoles/mos style/arrows}
