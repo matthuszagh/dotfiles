@@ -60,6 +60,7 @@ in
     useSandbox = true;
     nrBuildUsers = 100;
 
+    package = pkgs.nixFlakes;
     # use a local repo for nix to test out experimental changes
     package = pkgs.nixUnstable.overrideAttrs (old: {
       src = (src-path + "/nix");
@@ -70,8 +71,8 @@ in
     });
     nixPath = [
       "custompkgs=/home/matt/src/dotfiles/custompkgs" # private pkgs repo
-      "nur=/home/matt/src/NUR"               # Nix User Repositories
-      "nixpkgs=/home/matt/src/nixpkgs"       # use local mirror of nixpkgs collection
+      "nur=/home/matt/src/NUR" # Nix User Repositories
+      "nixpkgs=/home/matt/src/nixpkgs" # use local mirror of nixpkgs collection
       "nixpkgs-overlays=/etc/nixos/overlays"
       "nixos-config=/etc/nixos/configuration.nix"
       "/nix/var/nix/profiles/per-user/root/channels"
@@ -83,7 +84,7 @@ in
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true
-      # experimental-features = nix-command flakes
+      experimental-features = nix-command flakes
     '';
   };
 
