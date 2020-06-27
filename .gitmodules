@@ -1,3 +1,7 @@
 [submodule "emacs"]
-	path = config/emacs
+	path = emacs
 	url = git@github.com:matthuszagh/emacs.git
+
+[submodule "nixos"]
+	path = nixos
+	url = git@github.com:matthuszagh/nixos.git
