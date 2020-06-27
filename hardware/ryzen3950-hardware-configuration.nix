@@ -8,10 +8,11 @@ in
 {
   imports =[
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    # (services-path + "/system/btrfs-backup.nix")
+    (services-path + "/system/btrfs-backup.nix")
     (import (modules-path + "/xorg.nix") ({
       useStartx = useStartx;
       useNvidia = false;
+      inherit pkgs;
     }))
   ];
 
@@ -71,7 +72,6 @@ in
   environment.systemPackages = with pkgs; [
     radeontop
     krakenx
-    btrbk
   ];
 
   environment.variables.XCURSOR_SIZE = "32";
