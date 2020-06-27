@@ -169,7 +169,6 @@ in
     sageWithDoc
     # python3Packages.hdl_checker
     # must be root available for proper permissions
-    wireshark
     nix-generate-from-cpan
     perlPackages.LaTeXML
     compsize
@@ -213,8 +212,6 @@ in
     man.enable = true;
     # nixos.includeAllModules = true;
   };
-
-  # programs.wireshark.enable = true;
 
   services = {
     gnome3.gnome-settings-daemon.enable = true;
@@ -295,7 +292,6 @@ in
       "audio"
       "disk"
       "networkmanager"
-      "wireshark"
       "plugdev"
       "dialout"
       "libvirtd"
@@ -333,7 +329,6 @@ in
       gfortran
       cmake
       cask
-      # wireshark
       # TODO bundle with emacs
       python-with-packages
       gscan2pdf # connect to scanners
@@ -353,7 +348,6 @@ in
       ghostscript
       # utility for DJVU. allows converting djvu to pdf with ddjvu
       djvulibre
-      # TODO fix
       firefox
 
       ## math
