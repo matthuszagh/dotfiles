@@ -13,6 +13,7 @@ in
     (import (modules-path + "/xorg.nix") ({
       useStartx = useStartx;
       useNvidia = false;
+      inherit pkgs;
     }))
   ];
 
