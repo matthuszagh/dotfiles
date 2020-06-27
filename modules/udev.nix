@@ -36,7 +36,11 @@
 
         # NI gpib-usb-hs
         #SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="3923", ATTRS{idProduct}=="709b", \
-          ATTRS{serial}=="01E01169", SYMLINK+="gpib0", MODE:="666"
+        #  ATTRS{serial}=="01E01169", SYMLINK+="gpib0", MODE:="666"
+
+        # Mayflash GC adapter
+        SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", \
+          ATTRS{idProduct}=="0337", MODE="0666"
       '';
     };
 }
