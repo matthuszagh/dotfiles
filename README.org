@@ -77,17 +77,6 @@ I haven't yet setup octave packages in a Nix-declarative way. They are
 installed adhoc with ~pkg install /package/ -forge~ and go in the ~octave~
 subdir of home. This is less than ideal and not reproducible.
 
-** TODO circuitikz draw transistors with port lengths of 0
-This would allow connected to components to be centered between
-transistor port and subsequent node.
-** TODO circuitikz: draw transistor node connection at base
-I'd like to be able to write something like
-
-\begin{circuitikz}[color=fgcolor]
-\draw (0,0) to[R=$R$] ++(2,0) node[npn](q1){};
-\end{circuitikz}
-
-And have the port connect to the transistors base.
 * bootstrapping
 :PROPERTIES:
 :ID:       c2f11003-b5e9-48af-aa96-6fdf8a09eb32
