@@ -1,8 +1,8 @@
 NIXOS_DIR		= /etc/nixos
 SRC_DIR			= /home/matt/src
 DOTFILES_DIR		= $(SRC_DIR)/dotfiles
-NIXOS_DOTFILES_DIR	= $(SRC_DIR)/dotfiles/nixos
-EMACS_DOTFILES_DIR	= $(SRC_DIR)/dotfiles/emacs
+NIXOS_DOTFILES_DIR	= $(DOTFILES_DIR)/nixos
+EMACS_DOTFILES_DIR	= $(DOTFILES_DIR)/emacs
 HOSTNAME 		= $(shell hostname)
 
 .PHONY: rebuild
@@ -20,21 +20,19 @@ rebuild_boot: populate
 .PHONY: bootstrap
 bootstrap: populate
 	sudo nixos-rebuild switch \
-		-I nix=$(SRC_DIR)/nix \
-		-I nixpkgs=$(SRC_DIR)/nixpkgs \
 		-I custompkgs=$(NIXOS_DOTFILES_DIR)/custompkgs \
-		--keep-going
+		-I nix=$(SRC_DIR)/nix \
+		-I nur=$(SRC_DIR)/NUR \
+		-I nixpkgs=$(SRC_DIR)/nixpkgs \
+		-I nixpkgs-overlays=$(NIXOS_DOTFILES_DIR)/overlays \
+		-I nixos-config=$(NIXOS_DOTFILES_DIR)/configuration.nix \
+		-I /nix/var/nix/profiles/per-user/root/channels \
+		--show-trace
 
 .PHONY: populate
 populate: clean clean_flycheck_elc
-	cp $(NIXOS_DOTFILES_DIR)/configuration.nix $(NIXOS_DIR)
-	cp $(NIXOS_DOTFILES_DIR)/hardware/$(HOSTNAME)-hardware-configuration.nix \
-		$(NIXOS_DIR)/hardware-configuration.nix
-	cp -r $(NIXOS_DOTFILES_DIR)/config $(NIXOS_DIR)
-	cp -r $(NIXOS_DOTFILES_DIR)/services $(NIXOS_DIR)
-	cp -r $(NIXOS_DOTFILES_DIR)/modules $(NIXOS_DIR)
-	cp -r $(NIXOS_DOTFILES_DIR)/overlays $(NIXOS_DIR)
-	cp -r $(NIXOS_DOTFILES_DIR)/security $(NIXOS_DIR)
+	ln -sf $(NIXOS_DOTFILES_DIR)/hardware/$(HOSTNAME)-hardware-configuration.nix \
+		$(NIXOS_DOTFILES_DIR)/hardware-configuration.nix
 
 .PHONY: clean_flycheck_elc
 clean_flycheck_elc:
